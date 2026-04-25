@@ -1,0 +1,13 @@
+caso,ano,modo,chegadas,atendidos,taxa_atendimento,energia_kwh,energia_media_por_chegada_kwh,espera_media_min,espera_p95_min,pico_kw,fator_carga,utilizacao
+urbano_referencia,2026,deterministico,160,160,1.0000,4326.92,27.04,47.53,131.89,273.20,0.6868,0.4101
+urbano_referencia,2026,estocastico_mc80,160,160,1.0000,4463.12,27.89,69.72,178.87,281.37,0.6603,0.4269
+rodovia_dutra,2026,deterministico,245,245,1.0000,10598.42,43.26,745.26,1586.90,240.00,0.9023,0.6455
+rodovia_dutra,2026,estocastico_mc80,245,245,1.0000,10657.39,43.50,794.07,1653.81,243.08,0.8770,0.6631
+urbano_referencia,2030,deterministico,160,160,1.0000,4921.72,30.76,4.86,19.98,441.54,0.4976,0.3077
+urbano_referencia,2030,estocastico_mc80,159,159,1.0000,4734.14,29.77,7.87,31.84,445.50,0.4737,0.3179
+rodovia_dutra,2030,deterministico,309,309,1.0000,14563.33,47.13,452.48,1023.15,420.00,0.8814,0.7149
+rodovia_dutra,2030,estocastico_mc80,310,310,1.0000,14176.64,45.73,429.66,945.86,422.05,0.8750,0.6864
+urbano_referencia,2035,deterministico,160,160,1.0000,4971.60,31.07,1.36,9.18,515.50,0.4303,0.2776
+urbano_referencia,2035,estocastico_mc80,159,159,1.0000,4956.80,31.17,2.83,14.37,575.26,0.3846,0.2678
+rodovia_dutra,2035,deterministico,380,380,1.0000,18224.69,47.96,296.92,688.35,604.89,0.8806,0.7825
+rodovia_dutra,2035,estocastico_mc80,382,382,1.0000,18139.74,47.49,319.39,710.19,601.11,0.8708,0.7827

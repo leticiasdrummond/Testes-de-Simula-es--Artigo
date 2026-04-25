@@ -1,0 +1,46 @@
+{
+  "recorte_pesquisa": {
+    "anos": [
+      2026,
+      2030,
+      2035
+    ],
+    "monte_carlo_samples": 80,
+    "multiplicador_demanda": 1.0,
+    "incluir_referencia_urbana": true,
+    "corredor_alvo": "dutra",
+    "ano_recorte_abstract": 2030
+  },
+  "recorte_empirico_dutra": {
+    "fonte": "levantamento de operacao do corredor Dutra (eletropostos comparaveis)",
+    "janela_observacao": "2025-01 a 2026-02",
+    "dias_observados": 182,
+    "arrivals_daily_mean": 246.0,
+    "arrivals_daily_std": 58.0,
+    "arrivals_daily_p90": 312.0,
+    "energia_media_kwh_por_sessao": 31.8,
+    "energia_p90_kwh_por_sessao": 46.5,
+    "friday_factor": 1.12,
+    "holiday_factor": 1.18,
+    "share_nocturnal_22_6": 0.24,
+    "growth_factor_by_year": {
+      "2026": 1.0,
+      "2030": 1.26,
+      "2035": 1.55
+    },
+    "scenario_probability": {
+      "dutra_empirico_base": 0.6,
+      "dutra_empirico_pico": 0.25,
+      "dutra_empirico_vale": 0.15
+    }
+  },
+  "calibracao_dutra": {
+    "arrivals_by_year": {
+      "2026": 246,
+      "2030": 310,
+      "2035": 381
+    },
+    "perturbation": 0.259349593495935,
+    "long_trip_energy_shift_kwh": 4.77
+  }
+}

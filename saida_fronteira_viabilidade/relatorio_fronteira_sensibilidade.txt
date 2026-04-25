@@ -1,0 +1,66 @@
+RELATORIO - FRONTEIRA DE VIABILIDADE E ANALISE DE SENSIBILIDADE
+
+Base metodologica: Secao 5 do artigo (Results and discussion), com foco em:
+- Analise de resultado de otimizacao (capacidade, desempenho economico e tecnico)
+- Sensibilidade de parametros-chave
+- Diretrizes de projeto a partir dos limites de viabilidade
+
+Solver utilizado: gurobi
+
+1) RESULTADO BASE DA OTIMIZACAO
+- Funcao objetivo: 960,368.71
+- Lucro operacional anual: 1,081,942.90
+- PV otimizado (kW): 224.000
+- BESS otimizado (kWh): 621.978
+- Transformador otimizado (kW): 201.786
+- Taxa de perda PV (% proxy): 16.94
+- Eficiencia energetica (%): 93.46
+- Reducao de CO2 (% proxy): 75.49
+
+2) FRONTEIRA DE VIABILIDADE (MIN-MAX)
+- E_bess_cap_max: min=0 (aberto) | base=2000 | max=200000 (aberto)
+- P_pv_cap_max: min=0 (aberto) | base=1000 | max=100000 (aberto)
+- P_trafo_cap_max: min=0 (aberto) | base=500 | max=50000 (aberto)
+- allow_grid_export: min=0 (aberto) | base=0 | max=1 (aberto)
+- c_rate_charge: min=0 (aberto) | base=1 | max=10 (aberto)
+- c_rate_discharge: min=0 (aberto) | base=1 | max=10 (aberto)
+- capex_bess_kwh: min=0 (aberto) | base=700 | max=50000 (aberto)
+- capex_pv_kw: min=0 (aberto) | base=1200 | max=50000 (aberto)
+- capex_trafo_kw: min=0 (aberto) | base=1000 | max=50000 (aberto)
+- crf_bess: min=0 (aberto) | base=0.12 | max=1 (aberto)
+- crf_pv: min=0 (aberto) | base=0.1 | max=1 (aberto)
+- crf_trafo: min=0 (aberto) | base=0.08 | max=1 (aberto)
+- eta_charge: min=0 (aberto) | base=0.91 | max=1 (aberto)
+- eta_discharge: min=0.0001 (aberto) | base=0.91 | max=1 (aberto)
+- export_price_factor: min=0 (aberto) | base=0.7 | max=1 (aberto)
+- om_bess_kwh_year: min=0 (aberto) | base=25 | max=5000 (aberto)
+- om_pv_kw_year: min=0 (aberto) | base=30 | max=5000 (aberto)
+- om_trafo_kw_year: min=0 (aberto) | base=20 | max=5000 (aberto)
+- operational_days_equivalent: min=0 (aberto) | base=365 | max=3650 (aberto)
+- soc_initial_frac: min=0 (aberto) | base=0.5 | max=1 (aberto)
+- soc_max_frac: min=0 (aberto) | base=0.95 | max=1 (aberto)
+- soc_min_frac: min=0 (aberto) | base=0.05 | max=1 (aberto)
+- tariff_ev: min=0 (aberto) | base=1.6 | max=10 (aberto)
+
+3) SENSIBILIDADE - SINTese ORIENTADA AO CAP. 5
+- Ranking por impacto na funcao objetivo (variacao relativa maxima):
+  * operational_days_equivalent: Obj=1057.35% | PV=100.00% | BESS=162.77% | Rede=100.00%
+  * tariff_ev: Obj=619.35% | PV=0.00% | BESS=0.00% | Rede=0.00%
+  * allow_grid_export: Obj=97.57% | PV=346.43% | BESS=221.55% | Rede=143.29%
+  * P_pv_cap_max: Obj=25.91% | PV=100.00% | BESS=17.59% | Rede=352.76%
+  * capex_pv_kw: Obj=25.91% | PV=100.00% | BESS=17.59% | Rede=352.76%
+  * om_pv_kw_year: Obj=25.91% | PV=100.00% | BESS=17.59% | Rede=352.76%
+  * crf_pv: Obj=18.55% | PV=87.50% | BESS=15.39% | Rede=116.55%
+  * E_bess_cap_max: Obj=10.29% | PV=0.00% | BESS=100.00% | Rede=65.06%
+  * c_rate_charge: Obj=10.29% | PV=0.00% | BESS=100.00% | Rede=65.06%
+  * c_rate_discharge: Obj=10.29% | PV=0.00% | BESS=100.00% | Rede=65.06%
+
+- Leitura tecnica e economica:
+  * Parametros tarifarios e de custo tendem a alterar fortemente a funcao objetivo.
+  * Limites fisicos (P_trafo_cap_max, P_pv_cap_max, E_bess_cap_max) governam viabilidade operacional.
+  * Parametros de eficiencia e SOC afetam arbitragem temporal e uso da bateria.
+
+4) ARQUIVOS GERADOS
+- fronteira_viabilidade.csv
+- sensibilidade_resultados.csv
+- graficos/analise_grafica.html

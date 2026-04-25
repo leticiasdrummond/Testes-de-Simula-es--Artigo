@@ -1,0 +1,170 @@
+# Dados completos para rodar diretamente o modelo:
+#   modelo_abstract_artigo_itens_322_323_4_5_6.py
+#
+# Escopo: corredor Dutra, recorte empirico calibrado.
+#
+# Referencias tecnicas e cientificas usadas para parametrizacao (valores representativos):
+# 1) ANEEL (tarifas horarias e estrutura TE/TUSD): valores de grid_price em faixa plausivel
+#    para media tensao com sinal horario (off-peak/intermediario/ponta).
+# 2) EPE + ONS + literatura de recurso solar no Sudeste (CRESESB/SWERA):
+#    perfil horario de irradiance_cf com pico diurno e media diaria compativel com regiao.
+# 3) IEA/IRENA/NREL e estudos nacionais de armazenamento: CAPEX BESS e eficiencia Li-ion.
+# 4) Literatura de projetos PV comerciais no Brasil: CAPEX PV por kW instalado.
+# 5) Custos tipicos de infraestrutura de conexao: CAPEX transformador por kW equivalente.
+#
+# Observacao metodologica:
+# - Este arquivo ja inclui o recorte Dutra (SC, prob_sc, P_EV_load) para execucao direta.
+# - Se desejar modularizar, separar SC/prob_sc/P_EV_load em arquivo proprio e manter
+#   aqui apenas bloco tecnico-economico e exogenos de preco/irradiancia.
+
+set SC := dutra_empirico_base dutra_empirico_pico dutra_empirico_vale;
+
+param delta_t := 1.0;
+
+param prob_sc :=
+dutra_empirico_base 0.600000
+dutra_empirico_pico 0.250000
+dutra_empirico_vale 0.150000
+;
+
+# CAPEX (BRL): valores representativos para estudos de viabilidade 2025-2026.
+param capex_pv_kw := 4200;
+param capex_bess_kwh := 1600;
+param capex_trafo_kw := 850;
+
+# Penalidades/custos tecnicos no indice de viabilidade.
+param c_deg_bess := 0.03;
+param c_ens := 12000;
+
+# Parametros tecnicos do BESS (Li-ion, janela operacional conservadora).
+param eta_charge := 0.91;
+param eta_discharge := 0.91;
+param soc_min_frac := 0.05;
+param soc_max_frac := 0.95;
+param soc_initial_frac := 0.50;
+param c_rate_charge := 0.50;
+param c_rate_discharge := 0.50;
+
+# Limites maximos de projeto (Big-M fisico).
+param P_pv_cap_max := 1200;
+param E_bess_cap_max := 1200;
+param P_trafo_cap_max := 1500;
+
+# Requisitos de desempenho tecnico do fornecimento.
+param max_ens_ratio := 0.01;
+param min_self_suff_ratio := 0.20;
+param max_hourly_ens_frac := 0.15;
+param min_soc_reserve_frac := 0.15;
+param max_grid_import_ratio := 0.90;
+param max_bess_throughput_ratio := 2.20;
+
+# Pesos do indice tecnico multicriterio.
+param w_ens := 1000000;
+param w_grid_import := 1.00;
+param w_bess_throughput := 0.02;
+param w_cap_regularization := 0.001;
+
+# Preco de energia da rede (BRL/kWh) por cenario e hora.
+# Estrutura TOU agressiva: ponta 18-21h, intermediario 17h e 22h, fora de ponta nos demais horarios.
+param grid_price: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 :=
+dutra_empirico_base 0.57 0.55 0.54 0.53 0.54 0.58 0.64 0.70 0.74 0.72 0.70 0.68 0.67 0.69 0.72 0.78 0.95 1.18 1.22 1.24 1.20 0.96 0.74 0.62
+dutra_empirico_pico 0.58 0.56 0.55 0.54 0.55 0.60 0.67 0.74 0.78 0.76 0.73 0.71 0.70 0.72 0.76 0.82 1.00 1.25 1.30 1.32 1.28 1.02 0.78 0.65
+dutra_empirico_vale 0.55 0.53 0.52 0.51 0.52 0.56 0.61 0.66 0.70 0.68 0.66 0.64 0.63 0.65 0.68 0.74 0.90 1.12 1.16 1.18 1.14 0.91 0.70 0.59
+;
+
+# Preco de exportacao (BRL/kWh): conservador, inferior ao custo de compra.
+param export_price: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 :=
+dutra_empirico_base 0.25 0.25 0.24 0.24 0.24 0.25 0.26 0.27 0.28 0.28 0.29 0.30 0.30 0.30 0.29 0.28 0.27 0.26 0.26 0.26 0.26 0.26 0.25 0.25
+dutra_empirico_pico 0.26 0.26 0.25 0.25 0.25 0.26 0.27 0.28 0.29 0.29 0.30 0.31 0.31 0.31 0.30 0.29 0.28 0.27 0.27 0.27 0.27 0.27 0.26 0.26
+dutra_empirico_vale 0.24 0.24 0.23 0.23 0.23 0.24 0.25 0.26 0.27 0.27 0.28 0.29 0.29 0.29 0.28 0.27 0.26 0.25 0.25 0.25 0.25 0.25 0.24 0.24
+;
+
+# Fator de capacidade PV horario (0 a 1), representativo da Dutra (sudeste).
+param irradiance_cf: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 :=
+dutra_empirico_base 0.00 0.00 0.00 0.00 0.00 0.02 0.10 0.24 0.42 0.60 0.75 0.84 0.86 0.78 0.62 0.45 0.24 0.08 0.00 0.00 0.00 0.00 0.00 0.00
+dutra_empirico_pico 0.00 0.00 0.00 0.00 0.00 0.01 0.08 0.20 0.36 0.52 0.65 0.72 0.74 0.67 0.54 0.38 0.20 0.06 0.00 0.00 0.00 0.00 0.00 0.00
+dutra_empirico_vale 0.00 0.00 0.00 0.00 0.00 0.03 0.13 0.30 0.50 0.68 0.82 0.90 0.92 0.84 0.67 0.50 0.28 0.10 0.00 0.00 0.00 0.00 0.00 0.00
+;
+
+# Carga horaria VE (kW) derivada do recorte empirico Dutra para cada cenario.
+param P_EV_load: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 :=
+dutra_empirico_base 274.700 237.241 212.269 199.782 224.755 312.160 449.510 536.915 505.699 412.051 368.348 349.619 374.592 424.537 474.483 561.887 624.319 618.076 574.374 536.915 486.969 424.537 362.105 312.160
+dutra_empirico_pico 339.467 293.176 262.316 246.885 277.746 385.758 555.492 663.504 624.928 509.201 455.195 432.049 462.910 524.631 586.352 694.365 771.516 763.801 709.795 663.504 601.783 524.631 447.480 385.758
+dutra_empirico_vale 229.364 198.087 177.236 166.810 187.661 260.641 375.322 448.302 422.238 344.046 307.556 291.917 312.769 354.471 396.174 469.153 521.281 516.068 479.579 448.302 406.599 354.471 302.343 260.641
+;
+
+# Disponibilidade da rede (1=disponivel). Pode ser alterado para analise de contingencia.
+param grid_availability default 1.0 :=
+dutra_empirico_base 1 1.0
+dutra_empirico_base 2 1.0
+dutra_empirico_base 3 1.0
+dutra_empirico_base 4 1.0
+dutra_empirico_base 5 1.0
+dutra_empirico_base 6 1.0
+dutra_empirico_base 7 1.0
+dutra_empirico_base 8 1.0
+dutra_empirico_base 9 1.0
+dutra_empirico_base 10 1.0
+dutra_empirico_base 11 1.0
+dutra_empirico_base 12 1.0
+dutra_empirico_base 13 1.0
+dutra_empirico_base 14 1.0
+dutra_empirico_base 15 1.0
+dutra_empirico_base 16 1.0
+dutra_empirico_base 17 1.0
+dutra_empirico_base 18 1.0
+dutra_empirico_base 19 1.0
+dutra_empirico_base 20 1.0
+dutra_empirico_base 21 1.0
+dutra_empirico_base 22 1.0
+dutra_empirico_base 23 1.0
+dutra_empirico_base 24 1.0
+dutra_empirico_pico 1 1.0
+dutra_empirico_pico 2 1.0
+dutra_empirico_pico 3 1.0
+dutra_empirico_pico 4 1.0
+dutra_empirico_pico 5 1.0
+dutra_empirico_pico 6 1.0
+dutra_empirico_pico 7 1.0
+dutra_empirico_pico 8 1.0
+dutra_empirico_pico 9 1.0
+dutra_empirico_pico 10 1.0
+dutra_empirico_pico 11 1.0
+dutra_empirico_pico 12 1.0
+dutra_empirico_pico 13 1.0
+dutra_empirico_pico 14 1.0
+dutra_empirico_pico 15 1.0
+dutra_empirico_pico 16 1.0
+dutra_empirico_pico 17 1.0
+dutra_empirico_pico 18 1.0
+dutra_empirico_pico 19 1.0
+dutra_empirico_pico 20 1.0
+dutra_empirico_pico 21 1.0
+dutra_empirico_pico 22 1.0
+dutra_empirico_pico 23 1.0
+dutra_empirico_pico 24 1.0
+dutra_empirico_vale 1 1.0
+dutra_empirico_vale 2 1.0
+dutra_empirico_vale 3 1.0
+dutra_empirico_vale 4 1.0
+dutra_empirico_vale 5 1.0
+dutra_empirico_vale 6 1.0
+dutra_empirico_vale 7 1.0
+dutra_empirico_vale 8 1.0
+dutra_empirico_vale 9 1.0
+dutra_empirico_vale 10 1.0
+dutra_empirico_vale 11 1.0
+dutra_empirico_vale 12 1.0
+dutra_empirico_vale 13 1.0
+dutra_empirico_vale 14 1.0
+dutra_empirico_vale 15 1.0
+dutra_empirico_vale 16 1.0
+dutra_empirico_vale 17 1.0
+dutra_empirico_vale 18 1.0
+dutra_empirico_vale 19 1.0
+dutra_empirico_vale 20 1.0
+dutra_empirico_vale 21 1.0
+dutra_empirico_vale 22 1.0
+dutra_empirico_vale 23 1.0
+dutra_empirico_vale 24 1.0
+;

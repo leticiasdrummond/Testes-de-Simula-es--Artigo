@@ -1,0 +1,2726 @@
+
+===== PAGE 1 =====
+
+Energy 289 (2024) 129991
+Available online 14 December 2023
+0360-5442/© 2023 Elsevier Ltd. All rights reserved.
+Simultaneous capacity configuration and scheduling optimization of an 
+integrated electrical vehicle charging station with photovoltaic and battery 
+energy storage system 
+Xiao-Jian Dong, Jia-Ni Shen, Cheng-Wu Liu, Zi-Feng Ma, Yi-Jun He
+* 
+Department of Chemical Engineering, Shanghai Electrochemical Energy Devices Research Center, Shanghai Jiao Tong University, Shanghai, 200240, China   
+ARTICLE INFO  
+Handling Editor: Henrik Lund  
+Keywords: 
+Capacity configuration and scheduling 
+Simultaneous optimization 
+Electrical vehicle charging station 
+Photovoltaic 
+Battery energy storage system 
+ABSTRACT  
+The implementation of an optimal power scheduling strategy is vital for the optimal design of the integrated 
+electric vehicle (EV) charging station with photovoltaic (PV) and battery energy storage system (BESS). However, 
+traditional design methods always neglect accurate PV power modeling and adopt overly simplistic EV charging 
+strategies, which might result in suboptimal and infeasible designs. This study proposes a novel simultaneous 
+capacity configuration and scheduling optimization model for PV/BESS integrated EV charging stations, which 
+combines hybrid modeling for PV power prediction and optimal scheduling method for charging piles. The 
+original model is then converted to a mixed integer linear programming problem by the Big-M method to greatly 
+reduce the computational complexity. A typical scenario of commercial region is employed to demonstrate the 
+effectiveness of the proposed approach. The results indicate that the approach could improve economic benefits 
+by 15.67 % and reduce carbon emissions by 37.14 % compared with the entire grid-based mode. Besides, 
+integrating the PV hybrid modeling method and optimal charging scheduling strategy could achieve superior 
+capacity configurations and greatly improve the comprehensive performance of the system. It is thus illustrated 
+that the approach could provide a promising solution for the optimal design and scheduling of PV/BESS inte -
+grated EV charging stations.   
+1. Introduction 
+The integrated electric vehicle charging station (EVCS) with photo -
+voltaic (PV) and battery energy storage system (BESS) has attracted 
+increasing attention [ 1 ]. This integrated charging station could be 
+greatly helpful for reducing the EV ’ s electricity demand for the main 
+grid [ 2 ], restraining the fluctuation and uncertainty of PV power gen -
+eration [ 3 ], and consequently improving the renewable energy utiliza -
+tion ratio [ 4 ]. Although a large number of demonstration projects of the 
+integrated charging station have been constructed and their technical 
+feasibility has been validated, the capacity configuration of both PV and 
+BESS are usually determined by empirical methods [ 5 ]. In general, it has 
+been recognized that the implementation of optimal power scheduling 
+strategy with accurate historical PV power generation and EV charging 
+load information could play a significant role in assisting in the optimal 
+design of the integrated charging station [ 6 ]. Hence, the simultaneous 
+capacity configuration and scheduling optimization approach is of vital 
+importance to enhance the comprehensive performance of the 
+integrated charging station [ 7 ]. 
+Many approaches have been developed for optimizing the capacities 
+of key equipment and enhancing the performances of the PV/BESS in -
+tegrated charging stations in previous researches. Economic perfor -
+mance indicators are the most commonly used objectives in the 
+optimization process, such as net present value (NPV) [ 8 ], levelized cost 
+of electricity [ 9 ], return on investment [ 10 ], equipment install cost [ 11 ], 
+etc. Some studies also simultaneously optimize other performance in -
+dicators in terms of technical and environmental, like energy 
+self-consumption ratio [ 7 ], power loss [ 12 ], carbon emission [ 4 ], EV 
+served ratio [ 13 ], etc. Rodriguez et al. [ 14 ] analyze the technical per -
+formance, CO
+2 
+emission reduction, and financial attractiveness of PV-EV 
+systems based on typical scenarios from four countries. Bartolucci et al. 
+[ 4 ] propose a multi-objective optimization model for a PV/BESS assisted 
+EV charging station, which incorporates two objectives of minimizing 
+carbon emissions and maximizing the self-consumption of local energy 
+production. Compared to the extensive application of various objectives 
+and optimization algorithms in the capacity configuration phase, the 
+* Corresponding author. 
+E-mail address: heyijun@sjtu.edu.cn (Y.-J. He).  
+Contents lists available at ScienceDirect 
+Energy 
+journal homepag e: www.el sevier.com/loc ate/energy 
+https://doi.org/10.1016/j.energy.2023.129991 
+Received 12 June 2023; Received in revised form 7 December 2023; Accepted 10 December 2023   
+
+===== PAGE 2 =====
+
+Energy 289 (2024) 129991
+2
+simulation of operating characteristics for key equipment in the sched -
+uling process is still mostly based on primary and approximately linear 
+models to reduce the computational cost, which might lead to the 
+infeasible and suboptimal capacity configuration results [ 15 ]. Hence, 
+accurate modeling of operating characteristics and scheduling strategies 
+is necessary to obtain optimal designs of integrated charging stations. 
+PV output power profiles play a significant role in determining the 
+charging/discharging strategies of BESS and the trading behaviors be -
+tween charging stations and the main grid. However, accurate predic -
+tion of PV power remains a challenge due to the inherent stochastic, 
+intermittent, and fluctuating characteristics of solar energy [ 16 ]. In 
+previous researches on the capacity configuration of PV/BESS integrated 
+charging stations, PV output power is always described as a linear 
+function of solar irradiance and ambient temperature [ 17 ]. Neverthe -
+less, previous studies indicate that PV output power exhibits a complex 
+nonlinear relationship with both meteorological conditions and internal 
+parameters, which is always described by nonlinear models such as the 
+equivalent circuit model (ECM) and artificial neural network (ANN) 
+[ 18 ]. Therefore, employing a simple linear model might result in inac -
+curate PV output power profiles, rendering the capacity configuration 
+and scheduling based on them suboptimal or infeasible. Hence, more 
+accurate PV modeling methods should be utilized to obtain optimal. 
+Furthermore, the determination of the scheduling strategy for 
+charging piles is a crucial aspect of scheduling optimization, and also 
+plays a significant role in determining the optimal capacity configura -
+tion of integrated EV stations. Previous studies always assume the 
+charging demand of EVs as a constant power profile [ 9 ], or employ 
+simplistic rules to assign the power of charging piles, such as assuming 
+that EVs would be charged at maximum power upon arrival at the 
+charging piles [ 19 ]. However, this overly simplistic charging strategy 
+neglects the impact of factors such as the current power generation 
+ability of PV/BESS and time-of-use electricity prices of the integrated 
+charging station [ 20 ]. This might lead to excessive peak charging load 
+and prolonged idle time after charging [ 21 ], thereby reducing the eco -
+nomic benefits of the charging station [ 22 ]. Integrating the charging 
+scheduling model and constraints into the scheduling optimization 
+process and conducting a comprehensive economic evaluation of the 
+charging station, could achieve the optimal scheduling strategy of 
+charging piles [ 23 ]. This strategy could effectively reduce the 
+peak-to-valley difference of charging load [ 24 ], as well as improve the 
+consumption ratio of PV power generation [ 25 ]. Despite the promising 
+potential of such optimal charging strategies, previous studies have 
+primarily focused on the impact of such strategies on the scheduling 
+process [ 26 ], and the influence of such strategies on the capacity 
+configuration of PV/BESS integrated EV charging stations still lacks 
+systematic analysis. 
+Table 1 shows a brief evaluation of the capacity configuration and 
+scheduling optimization methods for PV/BESS integrated EV charging 
+stations or similar systems published in previous literature. Within the 
+context of previous research, there are two salient contributions deliv -
+ered to this paper: (1) a hybrid modeling approach for PV power pre -
+diction and an optimal scheduling method for charging piles are 
+developed to accurately describe the source/load power characteristics 
+d for the PV/BESS integrated charging station; (2) a simultaneous ca -
+pacity configuration and scheduling optimization approach is proposed 
+to enhance both the economic and environmental performances in the 
+whole lifecycle of the system. Moreover, to reduce the computational 
+cost of the optimization process, the Big-M linearization method is 
+employed to reformulate this model into a mixed integer linear pro -
+gramming (MILP) problem. 
+The remainder of this paper is organized as follows. Firstly, the 
+typical configuration of the PV/BESS integrated EV charging station and 
+the proposed simultaneous capacity configuration and scheduling opti -
+mization model are introduced. Subsequently, the optimization results 
+for a typical scenario in China are presented, and the influence of 
+different PV models and charging pile scheduling strategies on optimal 
+capacity configuration is analyzed. Then a sensitivity analysis of key 
+parameters is implemented and some meaningful conclusions are 
+concluded. Finally, the conclusion is drawn. 
+2. Problem formulation 
+A schematic diagram of the typical PV/BESS integrated EV charging 
+station is shown in Fig. 1 [ 4 ]. The proposed integrated charging station 
+consists of PV, BESS, EV charging piles, transformer (T), and main grid. 
+The electricity generated from PV, BESS, and the main grid are all 
+connected to a direct-current (DC) bus bar. This DC power is utilized to 
+charge EVs through charging piles. BESS is bi-directionally connected to 
+the DC bus bar, which serves to store excess energy from the system. The 
+energy could then be utilized to charge EVs during periods of electricity 
+shortages. Besides, the electricity interaction between the main grid and 
+the DC bus bar is also bi-directional through a transformer. This allows 
+the integrated charging station to sell electricity back to the main grid 
+when there is a surplus of energy and to purchase electricity when there 
+Table 1 
+Literature review on capacity configuration and scheduling optimization of PV/BESS integrated EV charging stations and similar systems.  
+Ref. Optimization Components Objectives PV modeling by ECM or ANN EV demand modeling Scheduling of EVCS 
+Design Scheduling Economic Environment 
+[ 3 ] × ✓ PV, EVCS, BESS ✓ × × × ×
+[ 4 ] ✓ ✓ PV, EVCS, BESS ✓ ✓ × ✓ ✓ 
+[ 5 ] ✓ ✓ PV, EVCS, flywheel ✓ × × ✓ ×
+[ 6 ] ✓ ✓ PV, wind, EVCS, BESS ✓ × × × ×
+[ 7 ] ✓ ✓ PV, EVCS, BESS ✓ × × ✓ ✓ 
+[ 8 ] ✓ ✓ PV, wind, EVCS, BESS ✓ × × ✓ ✓ 
+[ 9 ] ✓ ✓ PV, wind, EVCS, BESS ✓ ✓ × × ×
+[ 10 ] ✓ ✓ PV, EVCS, BESS ✓ × × × ×
+[ 11 ] ✓ ✓ PV, EVCS, BESS ✓ × × × ×
+[ 13 ] ✓ ✓ PV, EVCS, BESS ✓ × × ✓ ✓ 
+[ 14 ] ✓ ✓ PV, EVCS, BESS ✓ ✓ × × ×
+[ 15 ] × ✓ PV, EVCS, BESS ✓ × × ✓ ✓ 
+[ 17 ] ✓ × PV, EVCS, BESS ✓ × × ✓ ×
+[ 20 ] × ✓ PV, EVCS, BESS ✓ × × ✓ ✓ 
+[ 26 ] × ✓ PV, EVCS, BESS ✓ × × ✓ ✓ 
+[ 27 ] ✓ ✓ PV, EVCS, BESS ✓ × × × ✓ 
+[ 28 ] ✓ ✓ PV, EVCS, BESS ✓ × × × ×
+[ 29 ] ✓ ✓ PV, EVCS, BESS ✓ × ✓ ✓ ×
+[ 30 ] ✓ × PV, EVCS, BESS ✓ × ✓ × ×
+[ 31 ] ✓ × PV, EVCS, BESS ✓ ✓ × × ×
+This work ✓ ✓ PV, EVCS, BESS ✓ ✓ ✓ ✓ ✓  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 3 =====
+
+Energy 289 (2024) 129991
+3
+is a shortage. 
+Based on the above typical topology of the PV/BESS integrated EV 
+charging station, the simultaneous capacity configuration and sched -
+uling optimization problem is formulated to determine the optimal ca -
+pacity configurations and operating strategies of different equipment. In 
+this optimization problem, the preferred strategies should satisfy the 
+electricity demands for EVs within specified time periods, aiming to 
+maximize both the economic and environmental benefits of the system. 
+Hence, the optimization problem could be represented as follows: 
+Input: (1) the hourly profiles of weather conditions, including solar 
+irradiance, ambient temperature, and wind speed; (2) the parameters of 
+EV behaviors, including EV arrival time interval, charging demand, and 
+extra residence time; (3) time-of-use electricity price; (4) economic, 
+environmental, and technical parameters of PV, BESS, and transformer. 
+Output: (1) optimal capacities of PV, BESS, and transformer; (2) 
+typical annual scheduling strategy of the integrated charging station; (3) 
+economic, environmental, and technical performance evaluation 
+indicators. 
+Objective: maximize the comprehensive NPV during both the in -
+vestment and operation process. 
+System models: (1) hybrid model for PV system; (2) stochastic 
+simulation model for EV charging behaviors. 
+Main constraints: (1) design constraints; (2) energy balance con -
+straints; (3) constraints for optimal scheduling of charging piles; (4) 
+scheduling constraints of BESS and transformer. 
+Furthermore, the main variables and parameters used in the input, 
+output, and objective of the optimization problem are listed in Table 2 . 
+The specific functions of the above variables and other intermediate 
+variables in the optimization problem will be described in Section 3 . 
+The implementation procedure of the optimization approach is 
+shown in Fig. 2 . In this approach, the PV generation power and EV 
+charging demand characteristics are firstly derived by proposed system 
+models, utilizing input parameters such as weather conditions and pa -
+rameters of EV behaviors. Then the obtained characteristics are utilized 
+as inputs for the optimization model, where computations are performed 
+to determine the optimal capacities for crucial equipment and formulate 
+efficient scheduling strategies. 
+Fig. 1. Schematic diagram of the PV/BESS integrated EV charging station.  
+Table 2 
+The main variables and parameters used in the input, output, and objective of 
+the optimization problem.  
+Input Parameters 
+G
+t 
+solar irradiance at time t 
+T
+amb,t 
+ambient temperature at time t 
+v
+wind,t 
+wind speed at time t 
+Δ t
+EV 
+EV arriving time interval to integrated charging station 
+P
+EV 
+EV charging electricity demand 
+Δ t
+extra 
+EV extra residence time after charging completed 
+β
+buy
+t 
+time-of-use electricity price at time t 
+β
+load 
+price of charging for EVs 
+α
+I
+q 
+basic constant cost in the investment process of equipment q 
+β
+I
+q 
+unit cost per capacity in the investment process of equipment q 
+β
+D
+BESS 
+degradation cost of BESS per kWh capacity 
+β
+D
+PV 
+annual degradation cost of PV system per kW capacity 
+β
+M
+q 
+annual maintenance cost in the power generation process of equipment q 
+γ
+dch
+/ 
+γ
+ch 
+discharging/charging C-rate for BESS 
+η
+dch
+/ 
+η
+ch 
+discharging/charging efficiency of BESS 
+λ
+I
+q 
+basic constant equivalent carbon emissions in the construction process of 
+equipment q 
+μ
+I
+q 
+unit equivalent carbon emissions per capacity in the construction process 
+of equipment q 
+μ
+buy 
+unit equivalent carbon emission in purchasing electricity from main grid 
+Output Variables 
+W
+q 
+the optimal capacity of equipment q 
+P
+G
+PV , t 
+PV output power at time t 
+P
+sell
+t 
+power of selling electricity to grid at time t 
+P
+load
+t 
+power of charging for EVs at time t 
+P
+buy
+t 
+power of purchased electricity at time t 
+P
+dch
+t 
+discharging power of BESS at time t 
+P
+ch
+t 
+charging power of BESS at time t 
+S
+t 
+storage energy of BESS at time t 
+Objective 
+NPV comprehensive net present value during both the investment and 
+operation process  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 4 =====
+
+Energy 289 (2024) 129991
+4
+3. Methodology 
+Based on the above problem formulation, two main enhancements to 
+the system models are first presented, including a hybrid model for PV 
+systems and a stochastic simulation model for EV charging behaviors. 
+Then a comprehensive explanation of the proposed simultaneous ca -
+pacity configuration and scheduling optimization model is provided, 
+covering three key aspects: objective function, constraints, and other 
+evaluation indicators. 
+3.1. System models 
+3.1.1. Hybrid modeling method for PV system 
+The inherent stochastic, intermittent, and fluctuant characteristics of 
+solar energy would result in complex characteristics of PV power gen -
+eration [ 32 ]. In previous studies, the PV output power is always 
+described as a linear function of solar irradiance and cell temperature 
+[ 5 ]. The mathematical equation is described as: 
+P
+G
+PV , t
+= P
+STC
+G
+t
+G
+STC
+ 
+1 + k
+T
+ 
+T
+c , t
+  T
+c , STC
+))
+, ∀ t (1)  
+where P
+G
+PV , t 
+and P
+STC 
+are the PV output power at time t and rated power 
+measured at the standard test condition (STC), respectively. G
+t 
+and T
+c,t 
+are the solar irradiance and cell temperature at time t , respectively. G
+STC 
+and T
+c,STC 
+are the solar irradiance and cell temperature at STC, which are 
+25 
+◦
+C and 1 kW/m
+2 
+respectively. k
+T 
+is the temperature coefficient. 
+Generally, the cell temperature T
+c,t 
+is usually given as: 
+T
+c , t
+= T
+amb , t
++
+G
+t
+G
+NOCT
+ 
+T
+c , NOCT
+  T
+amb , NOCT
+)
+(2)  
+where T
+amb,t 
+is the ambient temperature at time t . T
+c,NOCT 
+is the PV 
+nominal operating cell temperature at the test condition of the solar 
+irradiance G
+NOCT 
+= 800 W/m
+2 
+and the ambient temperature T
+amb, NOCT 
+= 20 
+◦
+C. 
+However, PV output power is a nonlinear function of both solar 
+irradiance and cell temperature, and cell temperature is affected by 
+weather conditions, including solar irradiance, ambient temperature, 
+and wind speed [ 33 ]. The linear model represented by Eqs. (1) and (2) 
+cannot catch the accurate power characteristics of the PV system, 
+thereby resulting in suboptimal capacity configuration and scheduling 
+of the integrated charging station. Hence, a hybrid modeling method 
+based on the radial basis function neural network (RBFNN) is employed 
+for the accurate prediction of PV cell temperature and output power. The 
+implementation procedure is shown in Fig. 3 , and the mathematical 
+equations are shown as Eqs. (3) – (6) . Firstly, based on weather condition 
+parameters including solar irradiance ( G ), ambient temperature ( T
+amb
+), 
+and wind speed ( v
+wind
+), the PV cell temperature is calculated by RBFNN 
+in Eq. (3) and empirical equations in Eq. (4) . Then, the circuit param -
+eters, including I
+PV
+, I
+S
+, a , R
+S
+, and R
+P
+, are calculated based on Eq. (5) , 
+utilizing the solar irradiance and the calculated cell temperature. 
+Finally, the PV output power P is obtained by solving the single diode 
+R
+P
+-model in Eq. (6) . 
+y
+0
+ 
+x
+T , m
+)
+=
+∑
+h
+T
+i = 1
+β
+i
+T
+exp
+(
+ 
+1
+2 σ
+2
+T
+⃦
+⃦
+x
+T , m
+  c
+i
+T
+⃦
+⃦
+2
+2
+)
++ β
+0
+T
+, x
+T , m
+=
+[
+G
+m
+, T
+amb , m
+, v
+wind , m
+]
+(3)  
+T
+c
+= T
+amb
++ y
+0
+(
+G
+G
+NOCT
+)
+ 
+T
+c , NOCT
+  T
+amb , NOCT
+)
+(4)  
+⎧
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎩
+I
+PV
+=
+G
+G
+STC
+I
+PV , STC
++ y
+1
+( G , T
+c
+)
+I
+S
+= y
+2
+( G , T
+c
+) I
+S , STC
+R
+S
+R
+S , STC
+=
+T
+c
+T
+c , STC
+(
+1   μ ln
+(
+G
+G
+STC
+))
+a = a
+STC
+,
+R
+P
+R
+P , STC
+=
+G
+STC
+G
+y
+n
+ 
+x
+P , m
+)
+=
+∑
+h n , P
+i = 1
+β
+i
+n , P
+exp
+(
+ 
+1
+2 σ
+n , P
+2
+⃦
+⃦
+⃦ x
+m
+  c
+i
+n , P
+⃦
+⃦
+⃦
+2
+2
+)
++ β
+0
+n , P
+, n = 1 , 2 , x
+P , m
+=
+[
+G
+m
+, T
+c , m
+]
+(5)  
+I = I
+PV
+  I
+S
+[
+exp
+(
+q ( V + IR
+S
+)
+ak
+B
+T
+c
+)
+  1
+]
+ 
+V + IR
+S
+R
+P
+, P
+G
+PV
+= IV (6)  
+where x
+T,m 
+and x
+T,m 
+represent the input layers of the RBFNN for cell 
+temperature and output power prediction model. y
+0 
+is the output layer 
+of the RBFNN for cell temperature model, which represents the heat 
+transfer characteristics of PV. y
+1
+, and y
+2 
+are the output layers of the 
+RBFNNs for output power prediction model, which affects the circuit 
+parameters in the single diode R
+P
+-model. h
+T
+, σ
+T
+, c
+i
+T
+, β
+i
+T
+, and β
+0
+T 
+represent 
+the hidden neuron number, kernel width, hidden neuron center, output 
+Fig. 2. The implementation procedure of the simultaneous capacity configuration and scheduling optimization approach.  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 5 =====
+
+Energy 289 (2024) 129991
+5
+layer, and constant bias of the RBFNN in the cell temperature model, 
+respectively. I
+PV
+, I
+S
+, R
+S
+, R
+P
+, and a are the circuit parameters of the model 
+and represent the photocurrent, reverse saturation current, series 
+resistance, shunt resistance, and the ideality factor of the diode, 
+respectively. I
+PV,STC
+, I
+S,STC
+, a
+STC
+, R
+S,STC
+, and R
+P,STC 
+represent the circuit 
+parameters at standard test conditions. μ is an electrical parameter. y
+1 
+and y
+2 
+represent output layer neurons of the RBFNNs. x
+P,m 
+and y
+n,m 
+are 
+the input layer and n th output layer of the RBF neural network for m th 
+Fig. 3. The implementation procedure of the hybrid modeling method for PV system.  
+Fig. 4. The implementation procedure of stochastic simulation method for EV charging behaviors.  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 6 =====
+
+Energy 289 (2024) 129991
+6
+set of historical data, respectively. h
+n,P
+, σ
+n,P
+, c
+i
+n , P
+, β
+0
+n , P 
+and β
+i
+n , P 
+are the 
+parameters of RBFNN in the output power prediction model. I and V are 
+the PV output current and voltage, respectively. k
+B 
+is the Boltzmann ’ s 
+constant and q is the absolute value of electric charge for an electron. 
+This method shows good generalization under different PV types and 
+relatively wide weather conditions. The detailed introduction of the 
+hybrid modeling method for PV systems could refer to our previous 
+study [ 34 ]. 
+3.1.2. Stochastic simulation method for EV charging behaviors 
+The proper modeling of EV charging demand is a key prerequisite to 
+implement the optimal scheduling of charging piles. For an integrated 
+charging station, the most significant parameters that describe EV 
+charging behavior include the arrival time t
+a
+, leaving time t
+l
+, and 
+charging electricity demand P
+EV 
+of each EV. However, predicting these 
+parameters can be challenging due to the strong uncertainty resulting 
+from the difference in charging habits among different regions. In pre -
+vious studies, these parameters are always simulated by a probability 
+distribution function, such as normal, uniform, and exponential, which 
+are evaluated from available historical data [ 4 ]. In this study, a sto -
+chastic simulation method for EV charging behaviors is introduced. The 
+implementation procedure is shown in Fig. 4 , and the detailed descrip -
+tion is as follows: 
+(i) Firstly, some reasonable assumptions for the distribution func -
+tions of significant parameters. For example, the EV arrival time 
+interval Δ t
+EV 
+is assumed to follow an exponential distribution 
+[ 17 ], while P
+EV 
+and EV extra residence time after completing the 
+charging process Δ t
+extra 
+are assumed to follow a normal distri -
+bution [ 35 ].   
+where λ
+h 
+represents the expected EV arrival time interval for h th hour of 
+one day. μ
+EV 
+and σ
+EV 
+are the mean and standard deviation of P
+EV
+, 
+respectively. P
+EV,min 
+and P
+EV,max 
+are the minimum and maximum bound 
+of P
+EV
+, respectively. μ
+extra 
+and σ
+extra 
+are the mean and standard deviation 
+of Δ t
+extra
+, respectively. Δ t
+extra,min 
+and Δ t
+extra,max 
+are the minimum and 
+maximum bound of Δ t
+extra
+, respectively.  
+(ii) Then, a stochastic simulation method based on Monte Carlo 
+simulation is employed to generate the EV information arriving at 
+the integrated charging station in the whole year. The arriving 
+time t
+a 
+is simulated by the distribution of Δ t
+EV
+, while the leaving 
+time t
+l 
+is calculated according to the charging time and extra 
+residence time. The above simulation is iteratively executed until 
+the current time t
+a 
+exceeds 8760 h. The mathematic equations are 
+described as follows: 
+⎧
+⎪
+⎪
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪
+⎪
+⎪
+⎩
+t
+a
+n
+= 1 , n = 1
+t
+a
+n
+= t
+a
+n   1
++ Δ t
+EV , n
+, n = 2 ， ⋯ N
+a
+t
+l
+n
+= t
+a
+n
++ Δ t
+extra . n
++ P
+EV , n
+/
+P
+CP , max
+, n = 1 ， ⋯ N
+a
+t
+l
+N
+≤ 8760
+(8)  
+where subscript n and N
+a 
+represent the serial number and total number 
+of EVs arriving at the integrated charging station, respectively. P
+CP,max 
+represents the maximum output power of charging piles.  
+(iii) Finally, assign EVs to appropriate charging piles based on the 
+occupied time intervals of different EVs. In this study, a charging 
+pile could only charge for an EV at any given time. Hence, a bi -
+nary variable z
+c,t 
+is employed to describe the occupied status for 
+pile c at time t , which could be described as: 
+z
+c , t
+=
+{
+1 , t
+a
+c , v
+≤ t ≤ t
+l
+c , v
+0 , otherwise
+, ∀ c , v (9)  
+where t
+a
+c , v 
+and t
+l
+c , v 
+are the arrival and leave time of EV v of pile c 
+respectively. 
+Utilizing the above simulation method, we can obtain the total 
+number N
+s 
+of EVs that could be serviced in the integrated charging 
+station in the whole year, along with arriving/leaving time, charging 
+electricity demand, and the designated charging pile for each EV. 
+3.2. Simultaneous capacity configuration and scheduling optimization 
+model 
+3.2.1. Objective function 
+The objective function of the optimization model is to maximize the 
+comprehensive NPV during both the construction and operation process, 
+and both economic and environmental benefits are considered. The 
+mathematical equation is described as: 
+NPV =
+AOP
+CRF
+l , i
+  TCI (10)  
+where AOP and TCI represent the annual operating profit and total 
+construction investment of the system, respectively. CRF
+l,i 
+represents the 
+capital recovery factor, which is a function of the discount rate i and the 
+system lifecycle l . The mathematical equation is shown as: 
+CRF
+l , i
+=
+i ( 1 + i )
+l
+( 1 + i )
+l
+  1
+(11) 
+TCI consists of both the economic cost and the equivalent carbon 
+emission cost in the construction investment process, which is shown as: 
+TCI = C
+I
++ rE
+I
+=
+∑
+q
+(
+α
+I
+q
+x
+q
++ β
+I
+q
+W
+q
+)
++ N
+CP
+β
+I
+CP
++
+∑
+q
+(
+λ
+I
+q
+x
+q
++ μ
+I
+q
+W
+q
+)
+, q
+∈ { PV , BESS , T } (12)  
+where C
+I 
+and E
+I 
+are the economic cost and equivalent carbon emissions 
+⎧
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎪
+⎩
+P
+EV
+∼ N
+ 
+μ
+EV
+, σ
+2
+EV
+)
+: f ( x ) =
+1
+̅̅̅̅̅
+2 π
+√
+σ
+EV
+exp
+(
+ 
+( x   μ
+EV
+)
+2
+2 σ
+2
+EV
+)
+, P
+EV
+∈
+[
+P
+EV , min
+, P
+EV , max
+]
+Δ t
+EV
+∼ E ( λ
+h
+) : f ( x ) = λ
+h
+e
+  λ
+h
+x
+, h = 1 , 2 , ⋯24
+Δ t
+extra
+∼ N
+ 
+μ
+extra
+, σ
+2
+extra
+)
+: f ( x ) =
+1
+̅̅̅̅̅
+2 π
+√
+σ
+extra
+exp
+(
+ 
+( x   μ
+extra
+)
+2
+2 σ
+2
+extra
+)
+, Δ t
+extra
+∈
+[
+Δ t
+extra , min
+, Δ t
+extra , max
+]
+(7)   
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 7 =====
+
+Energy 289 (2024) 129991
+7
+in the construction investment process, respectively. r is the per carbon 
+trading price. Subscript q represents the equipment type including PV, 
+BESS and transformer. W
+q 
+is the capacity of equipment q . α
+I
+q 
+and β
+I
+q 
+are 
+the basic constant cost and capacity unit cost in the construction in -
+vestment process of equipment q , respectively. x
+q 
+is a binary variable 
+that represents whether equipment q is constructed. N
+CP 
+and β
+I
+CP 
+is the 
+number and investment cost of charging piles, respectively. λ
+I
+q 
+and μ
+I
+q 
+are 
+the basic constant and unit equivalent carbon emissions for capacities in 
+the construction process of equipment q , respectively. 
+The annual operational profit AOP is described as: 
+AOP = R   C
+P
+  C
+D
+  C
+M
+  rE
+O
+(13)  
+where R represents the annual revenues of the integrated charging sta -
+tion, which includes the benefits of selling electricity to grid and 
+charging for EVs. The mathematical equation is described as: 
+R = Δ t
+∑
+t
+ 
+β
+sell
+P
+sell
+t
++ β
+load
+P
+load
+t
+)
+(14)  
+where Δ t is the time step of the scheduling process. β
+sell 
+and β
+load 
+are the 
+price of selling electricity to grid and charging for EVs, respectively. P
+sell
+t 
+and P
+load
+t 
+are the power of selling electricity to grid and charging for EVs 
+at time t , respectively. Note that if the generated electricity is only 
+unitized by self and the residual electricity is prohibited to connect to 
+main grid, β
+sell 
+is zero and P
+load
+t 
+represents the abandoned power of the 
+system. 
+C
+P 
+represents the annual cost for purchased electricity, which in -
+cludes both the basic electricity cost and time-of-use electricity cost. The 
+mathematical equation is shown as: 
+C
+P
+= 12 α
+buy
+W
+T
++ Δ t
+∑
+t
+β
+buy
+t
+P
+buy
+t
+(15)  
+where α
+buy 
+is the basic price of electricity purchased from main grid each 
+month. β
+buy
+t 
+and P
+buy
+t 
+are the time-of-use electricity price and power of 
+purchased electricity at time t , respectively. 
+C
+D 
+represents the annual cost for equipment degradation. In this 
+study, PV system is assumed to be linear degradation with the operating 
+time, while the aging of BESS is assumed to be depended on the cycle 
+life. Hence, C
+D 
+could be calculated as: 
+C
+D
+= β
+D
+PV
+W
+PV
++
+β
+D
+BESS
+Δ t
+2 Q
+cycle
+∑
+t
+ 
+P
+ch
+t
++ P
+dch
+t
+)
+(16)  
+where β
+D
+BESS 
+is the degradation cost of BESS per kWh capacity. P
+dch
+t 
+and 
+P
+ch
+t 
+are the discharging and charging power of BESS at time t , respec -
+tively. Q
+cycle 
+is the total number of charging/discharging cycle for BESS 
+in the whole lifecycle. β
+D
+PV 
+is the annual degradation cost of PV system 
+per kW capacity. 
+C
+M 
+represents the annual equipment maintenance cost and could be 
+described as: 
+C
+M
+= N
+CP
+β
+M
+CP
++
+∑
+q
+β
+M
+q
+W
+q
+, q ∈ { PV , BESS , T } (17)  
+where β
+M
+CP 
+is the annual maintenance cost of each charging pile. β
+M
+q 
+is the 
+annual maintenance cost in the power generation process of equipment 
+q . 
+E
+O 
+represents the annual equivalent carbon emission in the operation 
+process, which includes the carbon emission from purchasing electricity 
+and recycling the power generation equipment. The mathematical 
+equation is shown as: 
+E
+O
+=
+∑
+t
+ 
+μ
+buy
+P
+buy
+t
+Δ t
+)
++
+∑
+t
+ 
+μ
+D
+BESS
+P
+dch
+t
+Δ t
+/
+Q
+cycle
+)
++ μ
+D
+PV
+W
+PV
+(18)  
+where μ
+buy
+, μ
+D
+BESS 
+and μ
+D
+PV 
+represent the unit equivalent carbon emission 
+in purchasing electricity from main grid, operating BESS and PV, 
+respectively. 
+3.2.2. Constraints 
+The capacity configuration and scheduling of the PV/BESS inte -
+grated EV charging station should be constrained by s series of equa -
+tions, including design constraints, energy balance constraints, and 
+scheduling constraints. The detailed introduction of these constraints is 
+as follows.  
+(1) Design constraints 
+The design capacity of all equipment in the integrated EV charging 
+station is restricted within a specific range due to the limitations of the 
+system size and occupied physical footprint, and the mathematical 
+equation is described as: 
+x
+q
+W
+min
+q
+≤ W
+q
+≤ x
+q
+W
+max
+q
+, ∀ q ∈ { PV , BESS , T } (19)  
+where W
+min
+q 
+and W
+max
+q 
+are the minimum and maximum capacity of 
+equipment q .  
+(2) Energy balance constraints 
+At any time period t , the input power of the bus bar should be equal 
+to the output power. The input power includes the power purchased 
+from the main grid, generated by PV, and discharged from BESS. The 
+output power includes the power sold to the main grid, charging for EVs 
+and BESS. Hence, the balance constraint of the bus bar could be 
+described as: 
+η
+dch
+P
+dch
+t
++ P
+G
+PV , t
++ P
+buy
+t
+= P
+load
+t
++ P
+ch
+t
+/
+η
+ch
++ P
+sell
+t
+, ∀ t (20)  
+where η
+dch 
+and η
+ch 
+are the discharging and charging efficiency of BESS, 
+respectively. 
+The storage energy S
+t 
+of BESS at time t is equal to the sum of the 
+storage energy S
+t -1 
+at the previous time t -1 and the net charging power 
+during the time period Δ t , as shown in Eq. (21) . 
+S
+t
+=
+{
+ 
+P
+ch
+t
+  P
+dch
+t
+)
+Δ t , t = 1
+S
+t   1
++
+ 
+P
+ch
+t
+  P
+dch
+t
+)
+Δ t , t ≥ 2
+(21)    
+(3) Constraints for optimal scheduling of charging piles 
+The traditional scheduling method prioritizes promptly meeting the 
+charging demand of EVs, whereby charging piles would operate at 
+maximum power once EVs arrive. This method ignores the difference in 
+the PV power generation capabilities and time-of-use electricity price at 
+different times, which might result in suboptimal scheduling results for 
+the integrated charging station. In this study, an optimal scheduling 
+method for charging piles is developed and coupled with the simulta -
+neous capacity configuration and scheduling optimization model. In this 
+method, all EVs are first assigned to appropriate charging piles accord -
+ing to the arrival and leaving time, which is obtained by the stochastic 
+simulation method shown in Section 3.1.2 . Then the output power P
+CP
+c , t 
+of 
+charging pile c at time t is optimized by the simultaneous model to cover 
+the power demand of all EVs. The mathematic equations of the optimal 
+scheduling constraints of charging piles are shown as: 
+P
+load
+t
+=
+∑
+c
+P
+CP
+c , t
+, ∀ t (22)  
+P
+EV
+c , v
+= Δ t
+∑
+t
+l
+c , v
+t = t
+a
+c , v
+P
+CP
+c , t
+, ∀ c , v (23) 
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 8 =====
+
+Energy 289 (2024) 129991
+8
+P
+pile , min
+z
+c , t
+≤ P
+pile
+c , t
+≤ P
+pile , max
+z
+c , t
+, ∀ c , t (24)  
+where P
+CP
+c , t 
+represents the power demand of c th charging pile at time t . 
+P
+EV
+c , v 
+is the electricity demand of v th EV at c th charging pile. P
+CP,min 
+and 
+P
+CP,max 
+are the minimum and maximum output power of charging piles, 
+respectively.  
+(4) Scheduling constraints of BESS and transformer 
+To improve the safety and stability of the main grid, the power 
+transaction between the integrated charging station and the main grid 
+should be constrained to: 
+P
+buy , min
+y
+buy
+t
+≤ P
+buy
+t
+≤ P
+buy , max
+y
+buy
+t
+, ∀ t (25)  
+P
+sell , min
+y
+sell
+t
+≤ P
+sell
+t
+≤ P
+sell , max
+y
+sell
+t
+, ∀ t (26)  
+where P
+buy ,min 
+and P
+buy ,max 
+are the minimum and maximum power that 
+could be purchased from the main grid, respectively. P
+sell ,min 
+and P
+sell ,max 
+are the minimum and maximum power that could be supplied to the 
+main grid, respectively. y
+buy
+t 
+and y
+sell
+t 
+are the binary variables that de -
+termines whether to purchase or sell power at time t , respectively. It is 
+assumed that the purchasing and selling electricity from the grid cannot 
+occur at the same time t , as shown in Eq. (24) . 
+y
+buy
+t
++ y
+sell
+t
+≤ 1 , ∀ t (27) 
+Note that P
+buy ,max 
+is equal to the active power of the transformer, 
+which is a function of the capacity W
+T 
+and the transformer efficiency η
+T
+, 
+as shown in Eq. (25) . 
+P
+buy , max
+= η
+T
+W
+T
+(28) 
+The constraint in Eq. (25) is nonlinear because both y
+buy
+t 
+and P
+buy ,max 
+are optimization variables. Consequently, the optimization model is a 
+mixed integer nonlinear optimization programming (MINLP) problem 
+with high computational difficulty. Hence, the Big-M linearization 
+method is employed to linearize the nonlinear constraint [ 37 ], and Eq. 
+(25) could be equivalently transformed as: 
+⎧
+⎪
+⎪
+⎨
+⎪
+⎪
+⎩
+P
+buy
+t
+≥ P
+buy , min
+y
+buy
+t
+P
+buy
+t
+≤ W
+max
+T
+y
+buy
+t
+P
+G
+q , t
+≤ P
+buy , max
+, ∀ t (29) 
+The discharging and charging power of the BESS are subject to both 
+the capacity and the C-rate, as shown in Eqs. (30) and (31) . 
+γ
+dch , min
+y
+dch
+t
+W
+BESS
+≤ P
+dch
+t
+≤ γ
+dch , max
+y
+dch
+t
+W
+BESS
+, ∀ t (30)  
+γ
+ch , min
+y
+ch
+t
+W
+BESS
+≤ P
+ch
+t
+≤ γ
+ch , max
+y
+ch
+t
+W
+BESS
+, ∀ t (31)  
+where y
+dch
+t 
+and y
+ch
+t 
+are the binary variables determine whether the BESS 
+is discharging or charging statue at time t , respectively. γ
+dch, min 
+and γ
+dch, 
+max 
+are the minimum and maximum discharging C-rate, respectively. γ
+ch, 
+min
+, and γ
+ch, max 
+are the minimum and maximum charging C-rate, 
+respectively. For BESS, the discharging and charging could be imple -
+mented simultaneously, which is described as: 
+y
+dch
+t
++ y
+ch
+t
+≤ x
+BESS
+, ∀ t (32) 
+Eqs. (30) and (31) are nonlinear constraints and are linearized by 
+Big-M method. The equivalent equations are shown as: 
+⎧
+⎪
+⎪
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪
+⎪
+⎪
+⎩
+P
+dch
+t
+≥ 0
+P
+dch
+t
+≥ γ
+dch , min
+W
+BESS
+ 
+ 
+1   y
+dch
+t
+)
+γ
+dch , min
+W
+max
+BESS
+P
+dch
+t
+≤ γ
+dch , max
+y
+dch
+t
+W
+max
+BESS
+P
+dch
+t
+≤ γ
+dch , max
+W
+BESS
+, ∀ t (33)  
+⎧
+⎪
+⎪
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪
+⎪
+⎪
+⎩
+P
+ch
+t
+≥ 0
+P
+ch
+t
+≥ γ
+ch , min
+W
+BESS
+ 
+ 
+1   y
+ch
+t
+)
+γ
+ch , min
+W
+max
+BESS
+P
+ch
+t
+≤ γ
+ch , max
+y
+ch
+t
+W
+max
+BESS
+P
+ch
+t
+≤ γ
+ch , max
+W
+BESS
+, ∀ t (34)  
+Besides, state of energy (SOE) is introduced to represent the current 
+storage energy status of BESS, which could be calculated as: 
+SOE
+t
+= S
+t
+/ W
+BESS
+(35) 
+To prevent the BESS from over-charging and over-discharging, S
+t 
+should be maintained within an appropriate scale, as shown in Eq. (33) . 
+SOE
+min
+W
+BESS
+≤ S
+t
+≤ SOE
+max
+W
+BESS
+, ∀ t (36)  
+where SOE
+min 
+and SOE
+max 
+are the minimum and maximum SOE of BESS, 
+respectively. 
+3.2.3. Other evaluation indicators 
+Although the objective function NPV utilized in this optimization 
+model provides a comprehensive economic indicator for evaluating 
+system performance, additional evaluation indicators are introduced to 
+achieve a multi-dimensional evaluation of optimization results. The 
+descriptions and mathematical equations of evaluation indicators are 
+shown in Table 3 . 
+Based on Eqs. ((10) – (24) and (26) – (29) and (32) – (34) and (36) , an 
+MILP model is developed for the simultaneous optimal capacity 
+configuration and scheduling of PV/BESS integrated EV charging station 
+system. 
+The proposed optimization model is solved by the Gurobi optimizer 
+via GAMS, with a relative optimization gap of 0.001 % and a maximum 
+run time of 5000 s. The computation platform is an Intel(R) Xeon(R) 
+CPU Gold 5218 @2.30 GHz computer with 16.00 GB RAM. Utilizing the 
+branch and bound method, the Gurobi optimizer always could find both 
+feasible and proven optimal solutions with a superior speed compared to 
+other solvers [ 38 ]. 
+Table 3 
+The description and mathematical equations of some evaluation indicators.  
+Indicators Description Equations 
+η
+NPV 
+NPV increasing percentage 
+compared to the entire grid-based 
+charging station 
+η
+NPV
+=
+NPV   NPV
+0
+NPV
+0
+a 
+η
+CO 2 carbon emission reduction of the 
+system in the whole lifecycle 
+compared to the entire grid-based 
+charging station 
+η
+CO 2
+= 1  
+E
+I
++ lE
+O
+l
+∑
+t
+( μ
+buy
+P
+load
+t
+Δ t )
+η
+loss
+PV 
+abandonment rate of PV 
+generation electrical energy when 
+the residual energy is prohibited to 
+sell to the main grid 
+η
+loss
+PV
+=
+∑
+t
+( P
+sell
+t
+Δ t )
+∑
+t
+( P
+G
+PV , t
+Δ t )
+η
+eff The energy efficiency of the system 
+in the whole lifecycle 
+η
+eff
+=
+∑
+t
+( P
+load
+t
++ P
+sell
+t
+) Δ t
+∑
+t
+( P
+G
+PV , t
++ P
+buy
+t
+) Δ t
+b 
+Q The daily mean number of BESS 
+charging/discharging cycles Q =
+∑
+t
+( P
+dch
+t
+Δ t )
+365 × ( SOE
+max
+  SOE
+min
+) W
+BESS  
+a
+NPV
+0 
+is calculated by Eqs. (6) – (15) when the capacities of PV and BESS are 
+equal to 0. 
+b
+when the additional generation electrical energy of the system is not available 
+to the grid, P
+sell
+t 
+is equal to 0.  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 9 =====
+
+Energy 289 (2024) 129991
+9
+4. Data description 
+A typical scenario of an EV charging station in the Shanghai com -
+mercial region, China, is developed to validate the effectiveness of the 
+proposed simultaneous optimization model. In this scenario, the 
+generated electricity of the system is only unitized by itself, and the 
+residual energy is prohibited to connect to the main grid. The system 
+lifecycle is set as 20 years and the time interval of the scheduling process 
+is 1 h. The discount rate is fixed at 6 % and the unit of all economic data 
+is Chinese Yuan (CNY). 
+One-year experimental data of a PV rooftop commercial plant is 
+collected for the validation of the proposed PV hybrid modeling method. 
+The collected data consists of solar irradiance, ambient temperature, 
+wind speed, PV cell temperature, output power, etc. The total annual 
+solar irradiance is about 1385.93 kWh ⋅ m
+  2
+. The measured average PV 
+output power for each month is shown in Fig. S-1 of the Supplementary 
+Material. 
+The parameters of charging piles and EVs are shown in Table 4 , and 
+the expected time interval distribution for EV arrivals is described in 
+Fig. 5 . It can be seen that the peak of EV charging demand appears be -
+tween 8:00 – 10:00. Utilizing the proposed stochastic simulation method 
+of EV behaviors, the integrated charging station would accommodate 
+approximately 29604 EVs each year, and the total annual electricity 
+demand is about 755.20 MWh. 
+The electricity price purchased from the main grid refers to general 
+industrial and commercial electricity prices in Shanghai. The basic 
+electricity price is 28 CNY ⋅ kVA
+  1 
+for each month, and three-level time- 
+of-use electricity prices in summer/non-summer are shown in Table 5 . 
+The detailed technical, economic, and environmental parameters of PV, 
+BESS, and transformer used in this study are shown in Tables S – 2 of the 
+Supplementary Material. The power losses of transformers are ignored 
+in this study due to the high efficiency exceeding 99 % of low-voltage 
+transformers [ 36 ]. 
+5. Results and discussion 
+In this section, the optimization results based on the typical scenario 
+are analyzed including both design capacities and scheduling strategies. 
+Then the impact of different PV models and scheduling methods of 
+charging piles on the optimization results are compared. Finally, sensi -
+tivity analysis of key parameters is implemented to analyze the impact of 
+key parameters on the optimization results. 
+5.1. Optimization result analysis 
+The proposed simultaneous optimal capacity configuration and 
+scheduling optimization model is solved based on the above scenario. 
+The capacity configuration optimization results and evaluation in -
+dicators are shown in Table 6 . It can be observed that the optimal ca -
+pacities of PV, BESS, and transformer are 221.61 kW, 79.96 kWh, and 
+114.70 kVA, respectively. The NPV of the PV/BESS integrated EV 
+charging station system for the whole lifecycle is 9.86 Mil. CNY. 
+Compared to the entire grid-based EV charging station, the proposed 
+method could reduce the whole lifecycle carbon emission by 37.14 % 
+and increase the economic benefit by 15.67 %. Besides, the result shows 
+high energy efficiency of 97.55 %, while the abandonment rate of PV 
+generation energy is only 4.88 %. the daily mean number of BESS 
+charging/discharging cycle is 0.85, which is a trade-off between battery 
+life and cost. 
+According to the scheduling optimization results, the annual energy 
+flow chart of the PV/BESS integrated EV charging station system is 
+shown in Fig. 6 . It can be seen that the annual electricity of PV gener -
+ation and purchased from the main grid are 301.65 and 472.49 MWh, 
+which accounts for about 38.97 % and 61.03 % of the whole energy 
+source of the system, respectively. About 94.93 % of input electricity 
+from the bus bar is directly utilized for charging EVs, while 3.17 % is 
+stored in the BESS. Besides, about 14.71 MWh of PV generation energy 
+cannot be utilized, accounting for 77.70 % of the system energy loss. The 
+remaining 22.29 % energy loss is attributed to the BESS charging/dis -
+charging process. 
+To capture the output power characteristics of different equipment at 
+different time periods in a day, the diurnal mean power profiles of 
+typical power flows from 0:00 to 24:00 are calculated and shown in 
+Fig. 7 , including PV generation power, charging/discharging power of 
+BESS, purchased power from the main grid, abandoned power, and the 
+power demand of EVs. The diurnal mean power represents the mean 
+power of specific time periods of the whole year. From Fig. 7 , it can be 
+observed that the daily mean power demand of EVs is almost higher than 
+the PV generation power in different time periods, while the power and 
+energy gap is covered by the electricity from the main grid, especially 
+from 15:00 to 6:00. Note that the profile of the purchased power shows 
+three valleys at time periods at 9:00 – 11:00, 14:00 – 15:00 and 
+19:00 – 21:00. This might because that the electricity prices at the above 
+time periods are peak prices and the cost of purchasing electricity from 
+main grid is expensive. The occurrence of abandoned electricity is 
+mainly observed between 9:00 – 15:00, possibly due to the BESS being 
+fully charged, and the excessive generation electricity from the PV sys -
+tem cannot be stored. 
+For the BESS, the charging process mainly occurs in two time 
+Table 4 
+The parameters of charging piles and EVs.  
+Parameters Description/Values Parameters Description/Values 
+Δ t
+extra
+/min N(60,40
+2
+), [20,150] P
+EV
+/kWh N(25,10
+2
+), [5,60] 
+P
+CP,max
+/kW 10 P
+CP,min
+/ kW 0.5 
+β
+load
+/CNY ⋅ kW
+  1 
+2 N
+CP 
+25 
+β
+I
+CP
+/CNY 30000 β
+M
+CP
+/CNY 1500  
+Fig. 5. The expected time interval distribution for EV arrivals.  
+Table 5 
+The time-of-use electricity prices in Shanghai/CNY ⋅ kWh
+  1
+.  
+Non-summer (Jan. – Jun., Oct. – Dec.) 
+Peak (8:00 – 11:00, 
+18:00 – 21:00) 
+Mid-peak (6:00 – 8:00, 
+11:00 – 18:00, 21:00 – 22:00) 
+Off-peak (0:00 – 6:00, 
+22:00 – 24:00) 
+1.106 0.678 0.316 
+Summer (Jul.-Sept.) 
+Peak (8:00 – 11:00, 
+13:00 – 15:00, 
+18:00 – 21:00) 
+Mid-peak (6:00 – 8:00, 
+11:00 – 13:00, 15:00 – 18:00, 
+21:00 – 22:00) 
+Off-peak (0:00 – 6:00, 
+22:00 – 24:00) 
+1.148 0.720 0.251  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 10 =====
+
+Energy 289 (2024) 129991
+10
+periods: (a) 0:00 – 7:00: BESS is mainly charged by the off-peak elec -
+tricity purchased from the grid; (b) 12:00 – 17:00: BESS is mainly charged 
+by the excessive generation electricity of PV. The discharging process of 
+BESS mainly occurs in two time periods: (a) 8:00 – 11:00: PV generation 
+power is not enough to cover the power demand and the purchased 
+electricity price is expensive in the peak time period; (b) 18:00 – 22:00: 
+PV generation power is almost equal to zero and the purchased elec -
+tricity price is also located at the peak time period, so BESS will release 
+the stored electricity with a higher depth of discharge to cover the high 
+electricity demand in the evening. 
+Through the above analysis, it can be seen that PV generation 
+capability and time-of-use electricity price show a significant impact on 
+the charging/discharging behavior of BESS. Both two factors are 
+different not only at different time periods of one day, but also in 
+different seasons of one year. Hence, to analyze the seasonal charac -
+teristic difference of the BESS scheduling strategies, the daily mean 
+number of BESS charging/discharging cycles Q at different months are 
+calculated and shown in Fig. 8 . 
+Table 6 
+Capacity configuration optimization results and evaluation indicators.  
+Categories Objective function Design variables Evaluation indicators 
+Indexes NPV W
+PV 
+W
+BESS 
+W
+T 
+η
+NPV 
+η
+CO 2 
+η
+loss
+PV 
+η
+eff Q 
+Units Mil. CNY kW kWh kVA % % % % / 
+Values 9.86 221.61 79.96 114.70 15.67 37.14 4.88 97.55 0.85  
+Fig. 6. The annual energy flow chart of the PV/BESS integrated EV charging station.  
+Fig. 7. The diurnal mean power profiles of typical power flows at different 
+time periods. 
+Fig. 8. The daily mean number of BESS charging/discharging cycles in 
+different months. 
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 11 =====
+
+Energy 289 (2024) 129991
+11
+It is found that Q in summer months from Jul. to Sept. is 0.97, which 
+is higher than 0.81 in non-summer months including Jan. – Jun., Oct. – 
+Dec. There are two possible reasons. On one hand, the solar irradiance in 
+summer is higher than that in non-summer. More PV generation elec -
+tricity could be utilized to charge BESS for improving the economic 
+benefits and energy efficiency of the charging station. On the other 
+hand, the maximum gap of time-of-use electricity price is 0.897 
+CNY ⋅ kWh
+  1
+, which is 13.54 % higher than that in non-summer, which 
+provides BESS more profit opportunities through charging in the off- 
+peak hours and discharging in the peak hours. 
+Note that the charging demand characteristics obtained by the pro -
+posed stochastic simulation for EV charging are uncertain, which might 
+affect the optimal capacity configuration of the PV/BESS integrated 
+charging station. We compare the optimization results based on 100 
+independent stochastic simulations. The results indicate that the impacts 
+of uncertainty from stochastic simulation for EV charging to optimiza -
+tion results are relatively small. The detailed results are shown in Ap -
+pendix B of the Supplementary Material. 
+5.2. Comparison of optimization results with different PV models 
+The selection of PV models plays an important role in the PV power 
+prediction accuracy, and further affects the optimization capacity 
+configuration results of the PV/BESS integrated EV charging station. In 
+this study, based on the experimental data of a PV rooftop commercial 
+plant shown in Section 4 , the PV power prediction performances of the 
+traditional linear model and the proposed hybrid modeling method are 
+first evaluated. The ten-fold cross-validation approach is introduced to 
+test the fitting and prediction accuracy of the proposed hybrid modeling 
+method. Then, we utilize the output power prediction results of two PV 
+models to implement the simultaneous optimization model and compare 
+the optimization capacity configuration results. 
+For a single 310 W PV module, the root mean squared errors (RMSEs) 
+during 10 sets of training and testing within the ten-fold cross-validation 
+for different PV models are shown in Table 7 . The prediction error dis -
+tributions and probability distribution curves for different PV models are 
+shown in Fig. 9 . It can be seen that the fitting and prediction RMSEs in 
+the simple linear model are 10.75 and 10.56 W, respectively. The fitting 
+and prediction RMSEs in the proposed hybrid model are 6.88 and 7.22 
+W, respectively. The output power prediction RMSE in the proposed 
+hybrid model is 31.63 % lower than that of the simple linear model. This 
+highlights the excellent performance of the proposed hybrid model in 
+predicting PV output power on the one-year experimental data of a PV 
+rooftop commercial plant. 
+Furthermore, the optimal capacities of PV, BESS, and transformer 
+based on output power prediction results of two PV models are 
+compared in Fig. 10 . Note that the optimal capacities based on the 
+measured data of PV power are obtained as the theoretical standard 
+design. The relative errors between the equipment capacities optimized 
+based on PV models and the standard design, are employed to represent 
+the deviation from the optimal solutions. From Fig. 10 , it can be 
+observed that the optimal capacities of PV, BESS, and transformer in the 
+standard design are 223.84 kW, 79.61 kWh, and 113.96 kVA, respec -
+tively. Based on the proposed PV hybrid model, the optimal capacities of 
+PV, BESS, and transformer are all close to those in the standard design, 
+with relative errors of only   0.99 %, 0.44 %, and 0.64 %, respectively. 
+Besides, based on the simple linear PV model, the optimal capacities of 
+PV, BESS, and transformer are 213.32 kW, 82.44 kWh, and 115.84 kVA, 
+with relative errors of   4.70 %, 3.55 %, and 1.64 %, respectively. The 
+design is obviously deviated from the standard design, which might 
+result in the infeasibility of the scheduling process. Hence, the simul -
+taneous optimization model based on the proposed hybrid modeling 
+method of PV power prediction could achieve a superior design of PV/ 
+BESS integrated EV charging stations. It is worth noting that the effec -
+tiveness of our approach, which is a novelty in comparison to existing 
+papers, can be expected based on these favorable results. 
+5.3. Comparison of optimization results with different scheduling 
+strategies of charging piles 
+The scheduling strategy of charging piles is a crucial aspect of the 
+scheduling process, and significantly affects the design of charging sta -
+tions. In this section, the simultaneous capacity configuration and 
+scheduling optimization models are implemented based on different 
+scheduling strategies for charging piles, including the maximum power 
+strategy and the proposed optimal scheduling strategy. The optimal NPV 
+of the system and capacities of PV/BESS with different scheduling 
+strategies of charging piles are compared in Fig. 11 . Note that the 
+maximum power strategy represents that EVs would be charged at the 
+maximum power of charging piles once arriving at the charging station. 
+It can be observed that NPV based on the maximum power strategy is 
+9.04 Mil. CNY, which is 9.07 % less than that with the proposed optimal 
+scheduling strategy. Besides, the optimal capacities of PV and BESS 
+based on the maximum power strategy are 243.50 kW and 327.74 kWh, 
+which are 8.9 % and 75.60 % larger than those with the proposed 
+optimal scheduling strategy. Thus, the simultaneous optimization model 
+with an optimal scheduling strategy of charging piles could significantly 
+reduce the design capacity of BESS and achieve higher economic ben -
+efits, compared to the traditional maximum power strategy. 
+To further analyze the causes for the differences between the opti -
+mization results of two scheduling strategies, the daily mean power 
+profiles of charging piles at different time periods are compared in 
+Fig. 12 . Note that the blue dotted line represents the power profile of PV 
+Table 7 
+The training and testing RMSEs in the ten-fold cross-validation for different PV 
+models (Unit: W).  
+Number of cross- 
+validation 
+Simple linear model Proposed hybrid model 
+Training 
+sets 
+Testing 
+sets 
+Training 
+sets 
+Testing 
+sets 
+1 10.99 8.31 6.94 6.93 
+2 10.70 11.20 6.94 7.00 
+3 10.83 9.98 6.71 7.25 
+4 10.57 12.28 6.87 7.61 
+5 11.03 7.86 6.82 7.11 
+6 10.67 11.48 6.98 5.95 
+7 11.06 7.44 7.02 6.17 
+8 10.76 10.65 6.88 7.02 
+9 10.26 14.43 6.79 9.17 
+10 10.61 11.98 6.91 8.00 
+Total 10.75 10.56 6.88 7.22  
+Fig. 9. The PV output power prediction error distributions for different 
+PV models. 
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 12 =====
+
+Energy 289 (2024) 129991
+12
+generation, which is introduced to assist the analysis of the power 
+supply and demand relationship in the charging station. It can be 
+observed that the power profile in the optimal scheduling strategy is 
+sharper than that in the maximum power strategy. The maximum power 
+in the optimal scheduling strategy is about 150.61 kW, which occurs at 
+10:00 – 13:00. The electricity generated by the PV system is abundant in 
+this time period, and the operating cost of the charging piles is cheap. 
+The minimum power of charging piles mainly occurs at about 
+8:00 – 11:00 and 19:00 – 21:00, both of which are the peak periods of 
+time-of-use electricity price, and the PV generation power is low. The 
+operating cost of the charging piles at these time periods is expensive. 
+Hence, the proposed optimal scheduling strategy could significantly 
+decrease the operating cost by making charging piles work during the 
+time period with off-peak electricity prices or sufficient PV generation 
+power. Besides, compared with the maximum power strategy, the 
+electricity demand at 19:00 – 21:00 in the optimal scheduling strategy is 
+significantly decreased, which might cause the smaller discharging 
+power requirement and smaller design capacity of BESS. 
+Besides, the selection of scheduling scenarios plays a significant role 
+in the feasibility and robustness of the simultaneous optimization model. 
+We compare the optimization results based on scheduling scenarios of a 
+typical day and the whole year. The results show that the optimal design 
+based on scheduling scenarios of the whole year could achieve higher 
+economic benefits and show better robustness, compared to that based 
+on a typical day. The detailed results are shown in Appendix C of the 
+Supplementary Material. 
+5.4. Sensitivity analysis of key parameters 
+The optimization results of the proposed simultaneous capacity 
+configuration and scheduling optimization approach under a typical 
+scenario have been adequately analyzed. Note that some parameters in 
+the optimization model are uncertain or inaccurate, due to the 
+Fig. 10. Comparison of optimal capacities based on different PV models: (a) PV; (b) BESS; (c) transformer.  
+Fig. 11. Comparison of optimization results based on different scheduling strategies of charging piles: (a) NPV; (b) PV capacity; (c) BESS capacity.  
+Fig. 12. The diurnal mean power profiles of charging piles at different time 
+periods with different scheduling strategies of charging piles. 
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 13 =====
+
+Energy 289 (2024) 129991
+13
+inherently random characteristics or the lack of knowledge. This might 
+lead to suboptimal results in both the capacity configuration and 
+scheduling processes. Hence, the sensitivity analysis approach is intro -
+duced to evaluate the impacts of some key parameters on the optimi -
+zation results, and some corresponding design guidelines rules are 
+concluded. The key parameters considered in this section consist of the 
+solar irradiance, investment cost of the transformer, cost per kWh of 
+BESS, on-grid prices, charging/discharging efficiency of BESS, arriving 
+time interval of EVs, charging electricity demand of EVs, etc. The 
+sensitivity analysis results of the former three parameters are shown as 
+follows, while the results of other parameters are shown in Appendix D 
+of the Supplementary Material. 
+5.4.1. Sensitivity analysis of the solar irradiance 
+The stochastic and intermittent characteristics of solar irradiance 
+could significantly affect the scheduling strategies and design capacities 
+of the PV/BESS integrated EV charging station. Besides, the difference of 
+regional solar irradiance conditions is also the main factor affecting the 
+generalizability of the design. Hence, the optimization results with 
+different solar irradiances are compared and shown in Fig. 13 (a) and (b). 
+The x-axis represents the ratios of the hourly solar irradiance to the 
+original values in the basic scenario shown in Section 4 . 
+From Fig. 13 , with the solar irradiance increasing, the PV capacity 
+decreases from 264.35 to 199.39 kW, while the BESS capacity increases 
+from 56.67 to 96.04 kWh. This might be because stronger PV irradiance 
+brings higher generation power per kW capacity, but the electricity 
+demand of charging piles is still constant, which results in the decrease 
+of the PV capacity. Besides, a larger capacity of the BESS would be 
+designed to store more excess PV generation electricity during the 
+daytime to cover the energy demand at night. As shown in Fig. 13 (b), the 
+NPV would increase with the solar irradiance increasing due to the 
+lower cost of electricity generation. However, the abandonment rate of 
+PV generation electricity still increases from 1.34 % to 10.47 % as the 
+ratio of the solar irradiance increases from 70 % to 130 %, despite 
+employing a higher capacity of the BESS. Hence, the issue of electricity 
+wastage in the PV/BESS integrated EV charging station should be given 
+greater attention, particularly in regions with high solar irradiance. To 
+address this issue, it is crucial to implement stringent energy efficiency 
+constraints and consider higher capacities for BESS. 
+5.4.2. Sensitivity analysis of the unit construction cost and capacity of the 
+transformer 
+The PV/BESS integrated EV charging stations are usually located in 
+urban residential and commercial areas, where the original capacities of 
+the transformers are always insufficient. Hence, the new investment of 
+the transformer is necessary to increase the maximum permissible power 
+from the main grid. The optimization results with different unit con -
+struction costs of the transformer are compared in Fig. 14 (a)-(b). The 
+results show that as the unit construction cost increases from 50 to 
+10000 CNY ⋅ kVA
+  1
+, the optimal transformer capacity decreases from 
+Fig. 13. The optimization results with different solar irradiances: (a) capacities of PV and BESS; (b) NPV and the abandonment rate of PV generation electricity.  
+Fig. 14. The optimization results with different unit investment capacity costs of the transformer: (a) NPV and transformer capacity; (b) capacities of PV and BESS.  
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 14 =====
+
+Energy 289 (2024) 129991
+14
+115.44 to 97.44 kVA, while the NPV decreases from 9.875 to 8.856 Mil. 
+CNY. This might be because the higher unit construction cost improves 
+the costs of both transformer construction and purchasing electricity, 
+which inhibits the capacity addition of the transformer. Besides, larger 
+capacities of PV and BESS are designed due to the lower cost per kWh as 
+shown in Fig. 14 (b). 
+In this study, the transformer capacity is assumed as an adjustable 
+optimization variable. However, the maximum permissible capacity of 
+the transformer is constrained by the line capacity of the main grid or 
+policy requirements in some areas. Hence, the optimization results 
+based on different transformer capacities are compared in Fig. 15 . The 
+curves in Fig. 15 (a) could be roughly divided into three parts: (a) As the 
+transformer capacity increases from 80 to 110 kVA, the optimal capacity 
+of PV rapidly decreases from 333.67 to 223.21 kW, while the capacity of 
+BESS decreases from 728 to 79.72 kWh. It might be because that too 
+small transformer capacity constraint would significantly reduce the 
+electricity purchased from the main grid, and the remaining electricity 
+demand would be covered by the PV and BESS with larger capacities. (b) 
+As the transformer capacity increases from 110 to 150 kVA, the 
+permissible power from the main grid gradually increases, and the 
+optimal capacities of PV and BESS decrease slowly from 223.21 to 
+218.06 kW and from 79.72 to 74.86 kWh, respectively. (c) As the 
+transformer capacity increases from 150 to 500 kVA, there are no sig -
+nificant changes in the capacities of PV and BESS. Based on the above 
+capacity configuration results, there is an optimal value for NPV with 
+respect to the transformer capacity as shown in Fig. 14 (b). Hence, there 
+is an optimal transformer capacity to maximize the NPV for areas with 
+no transformer capacity constraints. For some grid-weak areas with 
+transformer capacity constraints, larger capacities of PV and BESS are 
+required to cover the load demand regardless of its high cost. 
+5.4.3. Sensitivity analysis of the cycle cost per kWh for BESS 
+The construction cost and the cycle life of BESS are significant pa -
+rameters affecting the benefits of the PV/BESS integrated EV charging 
+station. In this study, the cycle cost per kWh is introduced to measure the 
+impact of aforementioned two parameters, which is computed by 
+dividing the construction cost by the cycle life. The value is 0.33 
+CNY ⋅ kWh
+  1 
+at the basic scenario in Section 4 . The optimization results 
+under different cycle costs per kWh of BESS are compared in Fig. 14 . 
+From Fig. 16 (a), it could be observed that the capacities of PV and 
+BESS both gradually decrease with the increasing for the cycle cost per 
+kWh of BESS. The optimal capacity of BESS is zero when the cycle cost 
+per kWh for BESS is over 0.55 CNY ⋅ kWh
+  1
+. This might be caused by the 
+electricity cost comparison between discharging by BESS and directing 
+Fig. 15. The optimization results with different transformer capacities: (a) capacities of PV and BESS; (b) NPV.  
+Fig. 16. The optimization results with different cycle costs per kWh of BESS: (a) capacities of PV and BESS; (b) NPV and the abandonment rate of PV generation 
+electricity. 
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 15 =====
+
+Energy 289 (2024) 129991
+15
+purchasing from the main grid during the peak periods. BESS would be 
+constructed when the cost of BESS discharging is lower than purchasing 
+from the main grid. On the contrary, purchasing electricity from the grid 
+is a more economical choice. Note that the abandonment rate of PV 
+generation electricity increases rapidly with the BESS capacity 
+decreasing in Fig. 16 (b). This might be because that the excess PV 
+generation electricity could not be stored and converted, which also 
+demonstrates the significance of BESS in reducing electricity waste. 
+Besides, the NPV of the charging station decreases from 9.825 to 10.01 
+Mil. CNY, as the cycle cost per kWh of BESS decreases from 0.55 to 0.033 
+CNY ⋅ kWh
+  1
+. With the development of lithium-ion battery technology, 
+the construction cost has been reduced and the life cycle has been 
+improved significantly. Hence, the economic performance of the PV/ 
+BESS integrated EV charging station would be further improved. 
+5.5. Scope and further application of the optimization model 
+The proposed optimization model could serve as a fundamental tool 
+to support the capacity configuration and scheduling strategy formula -
+tion for the PV/BESS integrated EV charging station. Its application has 
+the potential to significantly enhance the economic and environmental 
+sustainability of such charging stations, thereby promoting their wide -
+spread application across different regions. Besides, the proposed opti -
+mization model is universal enough to be applied to different types of 
+grid connections, including connected and islanded systems, by adjust -
+ing the selling price of electricity to the grid. As demonstrated in the 
+sensitivity analysis, this model could also be extended to the optimal 
+capacity configuration of different regions and scenarios through the 
+modification of relevant input parameters. Furthermore, after refining 
+the fundamental model and constraints, the methodology proposed in 
+this study for simultaneous capacity configuration and scheduling 
+optimization could also be employed for the optimal design of hybrid 
+renewable energy systems with various combinations of energy 
+equipment. 
+6. Conclusions 
+A novel simultaneous capacity configuration and scheduling opti -
+mization approach is proposed for the PV/BESS integrated charging 
+station in this study. In this approach, a hybrid modeling method for PV 
+systems and an optimal scheduling method for charging piles are 
+developed to accurately describe the source/load characteristics during 
+the scheduling process. Besides, to effectively solve this model, the Big- 
+M method is employed to reformulate this model into a MILP problem. 
+The effectiveness of the reformulated model is validated based on a 
+typical scenario of a commercial region in China. The results indicate 
+that the proposed model could improve NPV by 15.67 % and reduce 
+carbon emissions by 37.14 % compared to the entire grid-based charging 
+station. Besides, integrating the PV hybrid modeling method and 
+optimal charging scheduling strategy into the optimization model could 
+achieve a superior capacity configuration and greatly improve the 
+comprehensive performance of the system. Moreover, sensitivity anal -
+ysis is implemented to analyze the impact of key parameters on the 
+optimization results. The performances of the proposed method on 
+different conditions are further analyzed, and some design guidelines for 
+varying conditions are summarized. The proposed approach could pro -
+vide a promising solution for the optimal capacity configuration and 
+scheduling of PV/BESS integrated EV charging stations. However, the 
+proposed model has not considered the accurate modeling of key in -
+ternal state parameters for BESS and the impact of uncertainties in both 
+internal and external parameters. In future work, the robust design and 
+scheduling optimization methods considering accurate modeling of 
+BESS and multi-parameter uncertainty would be further studied to 
+achieve the optimal design of PV/BESS integrated charging stations. 
+Credit author statement 
+Xiao-Jian Dong: Conceptualization, Formal analysis, Methodology, 
+Software, Validation, Writing – original draft. Zi-Feng Ma: Project 
+administration, Supervision. Yi-Jun He: Conceptualization, Project 
+administration, Resources, Supervision, Writing – review & editing. Jia- 
+Ni Shen: Methodology, Writing – review & editing. Cheng-Wu Liu: 
+Writing – review & editing. 
+Declaration of competing interest 
+The authors declare that they have no known competing financial 
+interests or personal relationships that could have appeared to influence 
+the work reported in this paper. 
+Data availability 
+Data will be made available on request. 
+Acknowledgments 
+The authors gratefully acknowledge financial support from the Na -
+tional Natural Science Foundation of China under Grant 22238006. 
+Appendix A. Supplementary data 
+Supplementary data to this article can be found online at https://doi. 
+org/10.1016/j.energy.2023.129991 . 
+References 
+[1] Rehman AU, Ullah Z, Shafiq A, Hasanien HM, Luo P, Badshah F. Load management, 
+energy economics, and environmental protection nexus considering PV-based EV 
+charging stations. Energy 2023;281:128332. https://doi.org/10.1016/j. 
+energy.2023.128332 . 
+[2] Datta U, Kalam A, Shi J. Smart control of BESS in PV integrated EV charging station 
+for reducing transformer overloading and providing battery-to-grid service. 
+J Energy Storage 2020;28:101224. https://doi.org/10.1016/j.est.2020.101224 . 
+[3] Yang H, Gong Z, Ma Y, Wang L, Dong B. Optimal two-stage dispatch method of 
+household PV-BESS integrated generation system under time-of-use electricity 
+price. Int J Electr Power Energy Syst 2020;123:106244. https://doi.org/10.1016/j. 
+etran.2022.100209 . 
+[4] Bartolucci L, Cordiner S, Mulone V, Santarelli M, Ortenzi F, Pasquali M. PV assisted 
+electric vehicle charging station considering the integration of stationary first- or 
+second-life battery storage. J Clean Prod 2023;383:135426. https://doi.org/ 
+10.1016/j.jclepro.2022.135426 . 
+[5] Amry Y, Elbouchikhi E, Le Gall F, Ghogho M, El Hani S. Optimal sizing and energy 
+management strategy for EV workplace charging station considering PV and 
+flywheel energy storage system. J Energy Storage 2023;62:106937. https://doi. 
+org/10.1016/j.est.2023.106937 . 
+[6] Ekren O, Hakan Canbaz C, Güvel ÇB. Sizing of a solar-wind hybrid electric vehicle 
+charging station by using HOMER software. J Clean Prod 2021;279:123615. 
+https://doi.org/10.1016/j.jclepro.2020.123615 . 
+[7] Fachrizal R, Shepero M, Åberg M, Munkhammar J. Optimal PV-EV sizing at solar 
+powered workplace charging stations with smart charging schemes considering 
+self-consumption and self-sufficiency balance. Appl Energy 2022;307:118139. 
+https://doi.org/10.1016/j.apenergy.2021.118139 . 
+[8] Domínguez-Navarro JA, Dufo-L ´opez R, Yusta-Loyo JM, Artal-Sevil JS, Bernal- 
+Agustín JL. Design of an electric vehicle fast-charging station with integration of 
+renewable energy and storage systems. Int J Electr Power Energy Syst 2019;105: 
+46 – 58. https://doi.org/10.1016/j.ijepes.2018.08.001 . 
+[9] Sun B. A multi-objective optimization model for fast electric vehicle charging 
+stations with wind, PV power and energy storage. J Clean Prod 2021;288:125564. 
+https://doi.org/10.1016/j.jclepro.2020.125564 . 
+[10] Trevizan RD, Nguyen TA, Byrne RH. Sizing behind-the-meter energy storage and 
+solar for electric vehicle fast-charging stations. In: International symposium on 
+power electronics, electrical drives, automation and motion (SPEEDAM). Electr 
+Network; 2020. p. 583 – 8. https://doi.org/10.1109/ 
+SPEEDAM48782.2020.9161848 . 
+[11] Raouf Mohamed AA, Best RJ, Xueqin L, Morrow DJ. Residential battery energy 
+storage sizing and profitability in the presence of PV and EV. In: 2021 IEEE Madrid 
+PowerTech; 2021. p. 1 – 6. https://doi.org/10.1109/ 
+PowerTech46648.2021.9494792 . 
+[12] Purvis A, Holmes C, Ahmad I, Docherty J, Watson K, Wilkie J. Transition to EVs: a 
+case study in Scotland. In: 2021 56th international universities power engineering 
+conference; 2021. p. 1 – 6. https://doi.org/10.1109/UPEC50034.2021.9548261 . 
+X.-J. Dong et al.                                                                                                                                                                                                                                 
+
+===== PAGE 16 =====
+
+Energy 289 (2024) 129991
+16
+[13] Kumar N, Kumar T, Nema S, Thakur T. A multiobjective planning framework for 
+EV charging stations assisted by solar photovoltaic and battery energy storage 
+system in coupled power and transportation network. Int J Energy Res 2022;46(4): 
+4462 – 93. https://doi.org/10.1002/er.7442 . 
+[14] Sierra Rodriguez A, de Santana T, MacGill I, Ekins-Daukes NJ, Reinders A. 
+A feasibility study of solar PV-powered electric cars using an interdisciplinary 
+modeling approach for the electricity balance, CO
+2 
+emissions, and economic 
+aspects: the cases of The Netherlands, Norway, Brazil, and Australia. Prog 
+Photovoltaics 2020;28:517 – 32. https://doi.org/10.1002/pip.3202 . 
+[15] Lai CS, Chen D, Zhang J, Zhang X, Xu X, Taylor GA, et al. Profit maximization for 
+large-scale energy storage systems to enable fast EV charging infrastructure in 
+distribution networks. Energy 2022;259:124852. https://doi.org/10.1016/j. 
+energy.2022.124852 . 
+[16] McCormick PG, Suehrcke H. The effect of intermittent solar radiation on the 
+performance of PV systems. Sol Energy 2018;171:667 – 74. https://doi.org/ 
+10.1016/j.solener.2018.06.043 . 
+[17] Liu G, Chinthavali MS, Debnath S, Tomsovic K. Optimal sizing of an electric vehicle 
+charging station with integration of PV and energy storage. In: 2021 IEEE power & 
+energy society innovative smart grid technologies conference; 2021. p. 1 – 5. 
+https://doi.org/10.1109/ISGT49243.2021.9372269 . 
+[18] Ahmed R, Sreeram V, Mishra Y, Arif MD. A review and evaluation of the state-of- 
+the-art in PV solar power forecasting: techniques and optimization. Renew Sustain 
+Energy Rev 2020;124:109792. https://doi.org/10.1016/j.rser.2020.109792 . 
+[19] Vermaak HJ, Kusakana K. Design of a photovoltaic – wind charging station for small 
+electric Tuk – tuk in D.R.Congo. Renew Energy 2014;67:40 – 5. https://doi.org/ 
+10.1016/j.renene.2013.11.019 . 
+[20] Tushar W, Yuen C, Huang SS, Smith DB, Poor HV. Cost minimization of charging 
+stations with photovoltaics: an approach with EV classification. IEEE Trans Intell 
+Transport Syst 2016;17:156 – 69. https://doi.org/10.1109/TITS.2015.2462824 . 
+[21] Clement-Nyns K, Haesen E, Driesen J. The impact of charging plug-In hybrid 
+electric vehicles on a residential distribution grid. IEEE Trans Power Syst 2010;25: 
+371 – 80. https://doi.org/10.1109/TPWRS.2009.2036481 . 
+[22] Tao Y, Huang M, Chen Y, Yang L. Orderly charging strategy of battery electric 
+vehicle driven by real-world driving data. Energy 2020;193:116806. https://doi. 
+org/10.1016/j.energy.2019.116806 . 
+[23] Yan J, Zhang J, Liu Y, Lv G, Han S, Alfonzo IEG. EV charging load simulation and 
+forecasting considering traffic jam and weather to support the integration of 
+renewables and EVs. Renew Energy 2020;159:623 – 41. https://doi.org/10.1016/j. 
+renene.2020.03.175 . 
+[24] Tostado-V ´eliz M, Kamel S, Hasanien HM, Ar ´evalo P, Turky RA, Jurado F. 
+A stochastic-interval model for optimal scheduling of PV-assisted multi-mode 
+charging stations. Energy 2022;253:124219. https://doi.org/10.1016/j. 
+energy.2022.124219 . 
+[25] Ullah Z, Wang S, Wu G, Hasanien HM, Rehman AU, Turky RA, et al. Optimal 
+scheduling and techno-economic analysis of electric vehicles by implementing 
+solar-based grid-tied charging station. Energy 2023;267:126560. https://doi.org/ 
+10.1016/j.energy.2022.126560 . 
+[26] Chaudhari K, Ukil A, Kumar KN, Manandhar U, Kollimalla SK. Hybrid optimization 
+for economic deployment of ESS in PV-integrated EV charging stations. IEEE Trans 
+Ind Inf 2018;14:106 – 16. https://doi.org/10.1109/TII.2017.2713481 . 
+[27] Bracco S, Delfino F, Longo M, Siri S. Electric vehicles and storage systems 
+integrated within a sustainable urban district fed by solar energy. J Adv Transport 
+2019;2019:9572746. https://doi.org/10.1155/2019/9572746 . 
+[28] Baik SH, Jin YG, Yoon YT. Determining equipment capacity of electric vehicle 
+charging station operator for profit maximization. Energies 2018;11:2301. https:// 
+doi.org/10.3390/en11092301 . 
+[29] Fatnani M, Naware D, Mitra A. Design of solar PV based EV charging station with 
+optimized battery energy storage system. In: 2020 IEEE first international 
+conference on smart technologies for power. Energy and Control; 2020. p. 1 – 5. 
+https://doi.org/10.1109/STPEC49749.2020.9297719 . 
+[30] Bhatti AR, Salam Z, Sultana B, Rasheed N, Awan AB, Sultana U, et al. Optimized 
+sizing of photovoltaic grid-connected electric vehicle charging system using 
+particle swarm optimization. Int J Energy Res 2019;43:500 – 22. https://doi.org/ 
+10.1002/er.4287 . 
+[31] Yang M, Zhang L, Zhao Z, Wang L. Comprehensive benefits analysis of electric 
+vehicle charging station integrated photovoltaic and energy storage. J Clean Prod 
+2021;302:126967. https://doi.org/10.1016/j.jclepro.2021.126967 . 
+[32] Chin VJ, Salam Z, Ishaque K. Cell modelling and model parameters estimation 
+techniques for photovoltaic simulator application: a review. Appl Energy 2015; 
+154:500 – 19. https://doi.org/10.1016/j.apenergy.2015.05.035 . 
+[33] Dong X-J, Shen J-N, He G-X, Ma Z-F, He Y-J. A general radial basis function neural 
+network assisted hybrid modeling method for photovoltaic cell operating 
+temperature prediction. Energy 2021;234:121212. https://doi.org/10.1016/j. 
+energy.2021.121212 . 
+[34] Dong X-J, Shen J-N, Ma Z-F, He Y-J. Simultaneous operating temperature and 
+output power prediction method for photovoltaic modules. Energy 2022;260: 
+124909. https://doi.org/10.1016/j.energy.2022.124909 . 
+[35] Paffumi E, De Gennaro M, Martini G, et al. Experimental test campaign on a battery 
+electric vehicle: on-road test results (part 2). SAE Int J Altern Pow 2015;4(2): 
+277 – 92. https://doi.org/10.4271/2015-01-1166 . 
+[36] Janic Z, Gavrilov N, Roketinec I. Influence of cooling management to transformer 
+efficiency and ageing. Energies 2023;16(12):4626. https://doi.org/10.3390/ 
+en16124626 . 
+[37] Zhang W-Y, Chen Y, Wang Y, Xu Y. Equilibrium analysis of a peer-to-peer energy 
+trading market with shared energy storage in a power transmission grid. Energy 
+2023;274:127362. https://doi.org/10.1016/j.energy.2023.127362 . 
+[38] Lin M, Chin KS, Fu C, et al. An effective greedy method for the Meals-On-Wheels 
+service districting problem. Comput Ind Eng 2017;106:1 – 19. https://doi.org/ 
+10.1016/j.cie.2017.01.022 . 
+X.-J. Dong et al.                                                                                                                                                                                                                                 

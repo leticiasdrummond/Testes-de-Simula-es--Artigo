@@ -1,0 +1,56 @@
+ANALISE DA SECAO 3.2 - ADAPTACAO PARA ELETROPOSTO RODOVIARIO BRASILEIRO
+Base metodologica: simulacao_eletroposto_ve.py
+
+Contexto de modelagem:
+- O cenario urbano do artigo e mantido como referencia comparativa.
+- O cenario rodoviario inclui maior volume diario, maior volatilidade e
+  necessidade energetica media superior por sessao de recarga.
+- Corredores calibrados: Dutra, Anhanguera-Bandeirantes e BR-101.
+- Multiplicador de demanda do recorte: 1.00.
+
+Tabela consolidada (caso; ano; modo; chegadas; atendidos; taxa_atendimento;
+energia_kwh; energia_media_por_chegada_kwh; espera_media_min; espera_p95_min;
+pico_kw; fator_carga; utilizacao)
+urbano_referencia; 2026; deterministico; 160; 160; 1.0000; 4326.92; 27.04; 47.53; 131.89; 273.20; 0.6868; 0.4101
+urbano_referencia; 2026; estocastico_mc80; 160; 160; 1.0000; 4463.12; 27.89; 69.72; 178.87; 281.37; 0.6603; 0.4269
+rodovia_dutra; 2026; deterministico; 229; 229; 1.0000; 9463.67; 41.33; 582.20; 1282.12; 240.00; 0.8976; 0.5719
+rodovia_dutra; 2026; estocastico_mc80; 228; 228; 1.0000; 9490.37; 41.62; 629.95; 1333.99; 244.94; 0.8666; 0.5935
+rodovia_anhanguera_bandeirantes; 2026; deterministico; 250; 250; 1.0000; 9535.28; 38.14; 625.14; 1328.38; 254.80; 0.8296; 0.6213
+rodovia_anhanguera_bandeirantes; 2026; estocastico_mc80; 251; 251; 1.0000; 9642.29; 38.42; 666.11; 1400.40; 250.41; 0.8404; 0.6195
+rodovia_br101; 2026; deterministico; 209; 209; 1.0000; 9087.12; 43.48; 589.79; 1250.75; 240.00; 0.8585; 0.5591
+rodovia_br101; 2026; estocastico_mc80; 209; 209; 1.0000; 9213.26; 44.08; 615.44; 1296.14; 241.91; 0.8570; 0.5707
+urbano_referencia; 2030; deterministico; 160; 160; 1.0000; 4921.72; 30.76; 4.86; 19.98; 441.54; 0.4976; 0.3077
+urbano_referencia; 2030; estocastico_mc80; 159; 159; 1.0000; 4734.14; 29.77; 7.87; 31.84; 445.50; 0.4737; 0.3179
+rodovia_dutra; 2030; deterministico; 289; 289; 1.0000; 13104.77; 45.35; 338.06; 792.43; 427.40; 0.8633; 0.6468
+rodovia_dutra; 2030; estocastico_mc80; 291; 291; 1.0000; 12743.85; 43.79; 327.63; 734.46; 423.72; 0.8590; 0.6186
+rodovia_anhanguera_bandeirantes; 2030; deterministico; 320; 320; 1.0000; 13341.29; 41.69; 396.76; 843.74; 427.40; 0.8423; 0.6644
+rodovia_anhanguera_bandeirantes; 2030; estocastico_mc80; 320; 320; 1.0000; 12957.68; 40.49; 380.41; 811.24; 428.58; 0.8320; 0.6411
+rodovia_br101; 2030; deterministico; 274; 274; 1.0000; 13154.91; 48.01; 372.06; 829.78; 421.59; 0.8458; 0.6377
+rodovia_br101; 2030; estocastico_mc80; 277; 277; 1.0000; 12864.09; 46.44; 359.76; 786.96; 421.97; 0.8410; 0.6199
+urbano_referencia; 2035; deterministico; 160; 160; 1.0000; 4971.60; 31.07; 1.36; 9.18; 515.50; 0.4303; 0.2776
+urbano_referencia; 2035; estocastico_mc80; 159; 159; 1.0000; 4956.80; 31.17; 2.83; 14.37; 575.26; 0.3846; 0.2678
+rodovia_dutra; 2035; deterministico; 359; 359; 1.0000; 16505.00; 45.97; 229.02; 537.52; 607.40; 0.8567; 0.7103
+rodovia_dutra; 2035; estocastico_mc80; 359; 359; 1.0000; 16320.44; 45.46; 236.40; 537.82; 602.14; 0.8534; 0.7045
+rodovia_anhanguera_bandeirantes; 2035; deterministico; 395; 395; 1.0000; 16782.84; 42.49; 281.93; 604.00; 607.40; 0.8390; 0.7152
+rodovia_anhanguera_bandeirantes; 2035; estocastico_mc80; 398; 398; 1.0000; 16787.72; 42.18; 293.64; 623.75; 607.00; 0.8285; 0.7382
+rodovia_br101; 2035; deterministico; 349; 349; 1.0000; 17037.28; 48.82; 273.89; 614.37; 607.40; 0.8423; 0.7324
+rodovia_br101; 2035; estocastico_mc80; 351; 351; 1.0000; 16947.74; 48.28; 289.23; 635.98; 600.92; 0.8373; 0.7276
+
+Interpretacao analitica (foco de Secao 3.2):
+- Ano 2026 | rodovia_dutra: delta_pico_kw=-36.43, delta_espera_p95_min=+1155.12, delta_utilizacao=+0.1666 (vs urbano).
+- Ano 2026 | rodovia_anhanguera_bandeirantes: delta_pico_kw=-30.96, delta_espera_p95_min=+1221.53, delta_utilizacao=+0.1926 (vs urbano).
+- Ano 2026 | rodovia_br101: delta_pico_kw=-39.46, delta_espera_p95_min=+1117.27, delta_utilizacao=+0.1438 (vs urbano).
+- Ano 2030 | rodovia_dutra: delta_pico_kw=-21.78, delta_espera_p95_min=+702.62, delta_utilizacao=+0.3007 (vs urbano).
+- Ano 2030 | rodovia_anhanguera_bandeirantes: delta_pico_kw=-16.92, delta_espera_p95_min=+779.40, delta_utilizacao=+0.3232 (vs urbano).
+- Ano 2030 | rodovia_br101: delta_pico_kw=-23.53, delta_espera_p95_min=+755.12, delta_utilizacao=+0.3020 (vs urbano).
+- Ano 2035 | rodovia_dutra: delta_pico_kw=+26.88, delta_espera_p95_min=+523.45, delta_utilizacao=+0.4367 (vs urbano).
+- Ano 2035 | rodovia_anhanguera_bandeirantes: delta_pico_kw=+31.74, delta_espera_p95_min=+609.38, delta_utilizacao=+0.4704 (vs urbano).
+- Ano 2035 | rodovia_br101: delta_pico_kw=+25.66, delta_espera_p95_min=+621.61, delta_utilizacao=+0.4598 (vs urbano).
+
+Leitura para decisao de infraestrutura:
+- Corredores com pico e p95 de espera mais elevados devem priorizar
+  ampliacao de pontos DC, reforco de trafo e gestao ativa de fila.
+- Corredores com utilizacao muito alta tendem a boa receita operacional,
+  porem exigem robustez de manutencao e redundancia de equipamentos.
+- A calibracao por corredor reduz vies urbano e melhora aderencia da
+  simulacao ao contexto de eletropostos rodoviarios brasileiros.

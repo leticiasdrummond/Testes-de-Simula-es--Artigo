@@ -1,0 +1,68 @@
+RELATORIO AUDITADO - OTIMIZACAO DO DESPACHO ENERGETICO
+
+1. Objetivo e escopo
+Este documento apresenta, de forma auditavel e reproduzivel, os parametros de entrada,
+as variaveis avaliadas e os resultados da otimizacao para operacao horaria da estacao
+com fotovoltaico e bateria. O foco e minimizar o custo de compra de energia da rede.
+
+2. Rastreabilidade da execucao
+arquivo_dados,data.dat
+arquivo_relatorio,relatorio1.txt
+solver,gurobi
+solver_status,ok
+termination_condition,optimal
+
+3. Parametros globais utilizados
+parametro,valor
+N,24
+eta_ch,0.910000
+eta_dch,0.910000
+W_BESS,120.000000
+P_buy_max,100.000000
+delta_t,1.000000
+
+4. Indicadores agregados de resultado
+indicador,valor
+objetivo_total,748.520110
+energia_total_carga,1564.000000
+energia_total_pv,435.000000
+energia_total_importada_rede,1151.668132
+energia_total_exportada_rede,0.000000
+energia_total_carregamento_bess,120.000000
+energia_total_descarregamento_bess,120.000000
+soc_minimo,0.000000
+soc_maximo,120.000000
+
+5. Interpretacao tecnica dos resultados
+A solucao obtida representa o despacho de menor custo sob as restricoes fisicas do sistema.
+O perfil horario de compra da rede (P_buy) evidencia quando o sistema precisou de suporte externo,
+enquanto P_ch, P_dch e S descrevem o papel da bateria no deslocamento de energia ao longo do dia.
+A comparacao entre energia fotovoltaica, carga e intercambio com a rede permite revisar a coerencia
+operacional da solucao e apoiar colaboracao entre equipes tecnica, economica e de validacao.
+
+6. Serie temporal completa para colaboracao e revisao
+t,PV_gen,Load,buy_price,P_buy,P_sell,P_ch,P_dch,S
+1,0.000000,42.000000,0.550000,42.000000,0.000000,0.000000,0.000000,0.000000
+2,0.000000,40.000000,0.550000,40.000000,0.000000,0.000000,0.000000,0.000000
+3,0.000000,38.000000,0.530000,45.868132,0.000000,7.160000,0.000000,7.160000
+4,0.000000,37.000000,0.520000,100.000000,0.000000,57.330000,0.000000,64.490000
+5,0.000000,39.000000,0.520000,100.000000,0.000000,55.510000,0.000000,120.000000
+6,2.000000,45.000000,0.580000,43.000000,0.000000,0.000000,0.000000,120.000000
+7,8.000000,52.000000,0.620000,44.000000,0.000000,0.000000,0.000000,120.000000
+8,18.000000,58.000000,0.660000,40.000000,0.000000,0.000000,0.000000,120.000000
+9,32.000000,64.000000,0.700000,32.000000,0.000000,0.000000,0.000000,120.000000
+10,48.000000,68.000000,0.740000,20.000000,0.000000,0.000000,0.000000,120.000000
+11,60.000000,70.000000,0.760000,10.000000,0.000000,0.000000,0.000000,120.000000
+12,68.000000,72.000000,0.780000,4.000000,0.000000,0.000000,0.000000,120.000000
+13,65.000000,74.000000,0.770000,9.000000,0.000000,0.000000,0.000000,120.000000
+14,54.000000,76.000000,0.750000,22.000000,0.000000,0.000000,0.000000,120.000000
+15,40.000000,78.000000,0.730000,38.000000,0.000000,0.000000,0.000000,120.000000
+16,24.000000,80.000000,0.700000,56.000000,0.000000,0.000000,0.000000,120.000000
+17,12.000000,84.000000,0.680000,72.000000,0.000000,0.000000,0.000000,120.000000
+18,4.000000,90.000000,0.720000,86.000000,0.000000,0.000000,0.000000,120.000000
+19,0.000000,95.000000,0.800000,77.800000,0.000000,0.000000,18.901099,101.098901
+20,0.000000,92.000000,0.820000,0.000000,0.000000,0.000000,101.098901,0.000000
+21,0.000000,86.000000,0.780000,86.000000,0.000000,0.000000,0.000000,0.000000
+22,0.000000,74.000000,0.700000,74.000000,0.000000,0.000000,0.000000,0.000000
+23,0.000000,60.000000,0.620000,60.000000,0.000000,0.000000,0.000000,0.000000
+24,0.000000,50.000000,0.580000,50.000000,0.000000,0.000000,0.000000,0.000000

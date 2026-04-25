@@ -1,0 +1,17 @@
+# Entrada de recorte empirico Dutra para modelo abstrato
+# Parametros incluidos: SC, prob_sc e P_EV_load (demanda horaria em kW)
+# Use em conjunto com arquivo base contendo parametros tecnicos/economicos restantes.
+
+set SC := dutra_empirico_base dutra_empirico_pico dutra_empirico_vale;
+
+param prob_sc :=
+dutra_empirico_base 0.600000
+dutra_empirico_pico 0.250000
+dutra_empirico_vale 0.150000
+;
+
+param P_EV_load: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 :=
+dutra_empirico_base 274.700 237.241 212.269 199.782 224.755 312.160 449.510 536.915 505.699 412.051 368.348 349.619 374.592 424.537 474.483 561.887 624.319 618.076 574.374 536.915 486.969 424.537 362.105 312.160
+dutra_empirico_pico 339.467 293.176 262.316 246.885 277.746 385.758 555.492 663.504 624.928 509.201 455.195 432.049 462.910 524.631 586.352 694.365 771.516 763.801 709.795 663.504 601.783 524.631 447.480 385.758
+dutra_empirico_vale 229.364 198.087 177.236 166.810 187.661 260.641 375.322 448.302 422.238 344.046 307.556 291.917 312.769 354.471 396.174 469.153 521.281 516.068 479.579 448.302 406.599 354.471 302.343 260.641
+;

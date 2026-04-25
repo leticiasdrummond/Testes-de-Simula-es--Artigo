@@ -1,0 +1,142 @@
+====================================================================================================
+ANÁLISE COMPARATIVA DE INVESTIMENTO EM MICRORREDE PV-BESS
+Objetivo: Induzir Decisão de Investimento Otimizado
+====================================================================================================
+
+
+====================================================================================================
+1. CAPACIDADES OTIMIZADAS POR CENÁRIO
+====================================================================================================
+Cenário                        PV (kW)   BESS (kWh)   Trafo (kW)     CAPEX (BRL)
+----------------------------------------------------------------------------------------------------
+Base                              0.00         0.00        70.00          35,000
+CAPEX_70%                         0.00         0.00        70.00          24,500
+CAPEX_85%                         0.00         0.00        70.00          29,750
+CAPEX_114%                        0.00         0.00        70.00          40,250
+Horizonte_180dias                 0.00         0.00        70.00          35,000
+Horizonte_730dias                52.94         0.00        62.06         216,324
+TarifaVE_90%                      0.00         0.00        70.00          35,000
+TarifaVE_110%                     0.00         0.00        70.00          35,000
+TarifaVE_120%                     0.00         0.00        70.00          35,000
+
+====================================================================================================
+2. INDICADORES DE LUCRATIVIDADE
+====================================================================================================
+Cenário                       Lucro Anual    ROI (%)  Payback (anos)       VPL (BRL)
+----------------------------------------------------------------------------------------------------
+Base                               28,853       82.4            1.21          74,377
+CAPEX_70%                          28,853      117.8            0.85          84,877
+CAPEX_85%                          28,853       97.0            1.03          79,627
+CAPEX_114%                         28,853       71.7            1.39          69,127
+Horizonte_180dias                  14,229       40.7            2.46          18,939
+Horizonte_730dias                 260,958      120.6            0.83         772,912
+TarifaVE_90%                        5,988       17.1            5.85          -3,055
+TarifaVE_110%                      51,719      147.8            0.68         161,054
+TarifaVE_120%                      74,584      213.1            0.47         247,732
+
+====================================================================================================
+3. INDICADORES DE MERCADO
+====================================================================================================
+Cenário                    Exp. Rede (%)  Autossuf. (%)  Compet. Tarif.(%)   Dif. Tarif.(BRL/kWh)
+----------------------------------------------------------------------------------------------------
+Base                               100.0            0.0               33.3                  0.212
+CAPEX_70%                          100.0            0.0               33.3                  0.212
+CAPEX_85%                          100.0            0.0               33.3                  0.212
+CAPEX_114%                         100.0            0.0               33.3                  0.212
+Horizonte_180dias                  100.0            0.0               33.3                  0.212
+Horizonte_730dias                   51.0           49.0               33.3                  0.212
+TarifaVE_90%                       100.0            0.0               20.0                  0.127
+TarifaVE_110%                      100.0            0.0               46.7                  0.297
+TarifaVE_120%                      100.0            0.0               60.0                  0.382
+
+====================================================================================================
+4. INDICADORES OPERACIONAIS
+====================================================================================================
+Cenário                      FC PV (%)  Util. Trafo(%)   Ciclos BESS/dia   Perdas BESS(%)
+----------------------------------------------------------------------------------------------------
+Base                               0.0           100.0              0.00              0.0
+CAPEX_70%                          0.0           100.0              0.00              0.0
+CAPEX_85%                          0.0           100.0              0.00              0.0
+CAPEX_114%                         0.0           100.0              0.00              0.0
+Horizonte_180dias                  0.0           100.0              0.00              0.0
+Horizonte_730dias                 30.6           100.0              0.00              0.0
+TarifaVE_90%                       0.0           100.0              0.00              0.0
+TarifaVE_110%                      0.0           100.0              0.00              0.0
+TarifaVE_120%                      0.0           100.0              0.00              0.0
+
+====================================================================================================
+5. ANÁLISE DE SENSIBILIDADE E RECOMENDAÇÕES
+====================================================================================================
+
+5.1 Cenários Ordenados por ROI (Retorno sobre Investimento):
+----------------------------------------------------------------------------------------------------
+  1. TarifaVE_120%        ROI:  213.1%  Payback:  0.47 anos
+  2. TarifaVE_110%        ROI:  147.8%  Payback:  0.68 anos
+  3. Horizonte_730dias    ROI:  120.6%  Payback:  0.83 anos
+  4. CAPEX_70%            ROI:  117.8%  Payback:  0.85 anos
+  5. CAPEX_85%            ROI:   97.0%  Payback:  1.03 anos
+
+5.2 Cenários com Menor Payback:
+----------------------------------------------------------------------------------------------------
+  1. TarifaVE_120%        Payback:  0.47 anos  ROI:  213.1%
+  2. TarifaVE_110%        Payback:  0.68 anos  ROI:  147.8%
+  3. Horizonte_730dias    Payback:  0.83 anos  ROI:  120.6%
+  4. CAPEX_70%            Payback:  0.85 anos  ROI:  117.8%
+  5. CAPEX_85%            Payback:  1.03 anos  ROI:   97.0%
+
+5.3 Cenários com Maior Valor Presente Líquido (VPL):
+----------------------------------------------------------------------------------------------------
+  1. Horizonte_730dias    VPL:      772,912 BRL
+  2. TarifaVE_120%        VPL:      247,732 BRL
+  3. TarifaVE_110%        VPL:      161,054 BRL
+  4. CAPEX_70%            VPL:       84,877 BRL
+  5. CAPEX_85%            VPL:       79,627 BRL
+
+5.4 Impacto da Redução de CAPEX:
+----------------------------------------------------------------------------------------------------
+  CAPEX 70%: ROI = 117.8% (Δ+35.3%), Payback = 0.85 anos (Δ-0.36)
+  CAPEX 85%: ROI = 97.0% (Δ+14.5%), Payback = 1.03 anos (Δ-0.18)
+  CAPEX 115%: ROI = 71.7% (Δ-10.8%), Payback = 1.39 anos (Δ+0.18)
+
+5.5 Impacto do Horizonte de Avaliação:
+----------------------------------------------------------------------------------------------------
+  180 dias: ROI = 40.7% (Δ-41.8%), Lucro Anual = 14,229 BRL
+  730 dias: ROI = 120.6% (Δ+38.2%), Lucro Anual = 260,958 BRL
+
+5.6 Impacto do Diferencial Tarifário (Tarifa VE):
+----------------------------------------------------------------------------------------------------
+  Tarifa 90%: ROI = 17.1% (Δ-65.3%), Competitividade = 20.0%
+  Tarifa 110%: ROI = 147.8% (Δ+65.3%), Competitividade = 46.7%
+  Tarifa 120%: ROI = 213.1% (Δ+130.7%), Competitividade = 60.0%
+
+====================================================================================================
+6. RECOMENDAÇÕES PARA OTIMIZAÇÃO DO INVESTIMENTO
+====================================================================================================
+
+A. CENÁRIO RECOMENDADO (Melhor ROI): TarifaVE_120%
+   - ROI: 213.1%
+   - Payback: 0.47 anos
+   - VPL: 247,732 BRL
+   - Capacidades: PV=0.0 kW, BESS=0.0 kWh
+
+B. ESTRATÉGIAS PARA MAXIMIZAR RETORNO:
+   1. REDUÇÃO DE CAPEX:
+      - Reduzir CAPEX em 30% aumenta ROI em 35.3 pontos percentuais
+      - Buscar fornecedores competitivos, compras em volume, incentivos fiscais
+
+   2. OTIMIZAÇÃO TARIFÁRIA:
+      - Aumentar tarifa VE em 20% aumenta ROI em 130.7 pontos percentuais
+      - Análise de competitividade de mercado é fundamental
+
+   3. HORIZONTE DE AVALIAÇÃO:
+      - Horizonte mais longo permite amortizar melhor o CAPEX
+      - Considerar vida útil dos equipamentos (PV: 25 anos, BESS: 10-15 anos)
+
+   4. AUTOSSUFICIÊNCIA ENERGÉTICA:
+      - Autossuficiência atual: 0.0%
+      - Exposição à rede: 100.0%
+      - Maior investimento em PV/BESS reduz exposição à volatilidade de preços
+
+====================================================================================================
+FIM DO RELATÓRIO
+====================================================================================================

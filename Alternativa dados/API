@@ -1,0 +1,67 @@
+"""
+Acesso simples aos dados abertos da ANEEL via API CKAN.
+
+Uso:
+    python API
+
+Dependencias:
+    pip install requests
+"""
+
+from __future__ import annotations
+
+import json
+from typing import Any
+
+import requests
+
+
+BASE_URL = "https://dadosabertos.aneel.gov.br/api/3/action"
+
+
+def buscar_pacotes_aneel(termo: str = "tarifa", timeout_segundos: int = 45) -> dict[str, Any]:
+    """Consulta pacotes no portal aberto da ANEEL usando endpoint CKAN."""
+    url = f"{BASE_URL}/package_search"
+    params = {"q": termo, "rows": 5}
+
+    resposta = requests.get(url, params=params, timeout=timeout_segundos)
+    resposta.raise_for_status()
+
+    payload = resposta.json()
+    if not payload.get("success"):
+        raise RuntimeError("A API da ANEEL respondeu sem sucesso.")
+
+    return payload
+
+
+def main() -> None:
+    try:
+        payload = buscar_pacotes_aneel(termo="tarifa")
+        resultados = payload["result"]["results"]
+
+        if not resultados:
+            print("Nenhum pacote encontrado para o termo informado.")
+            return
+
+        print("Acesso OK. Primeiros pacotes encontrados na ANEEL:\n")
+        for i, pacote in enumerate(resultados, start=1):
+            titulo = pacote.get("title", "(sem titulo)")
+            nome = pacote.get("name", "(sem nome)")
+            print(f"{i}. {titulo} | id: {nome}")
+
+    except requests.exceptions.Timeout:
+        print(
+            "Erro de acesso: timeout ao consultar a API da ANEEL. "
+            "Verifique internet, proxy corporativo ou firewall e tente novamente."
+        )
+    except requests.exceptions.RequestException as erro_http:
+        print(f"Erro de acesso HTTP: {erro_http}")
+    except (KeyError, ValueError, json.JSONDecodeError) as erro_parse:
+        print(f"Erro ao interpretar resposta da API: {erro_parse}")
+    except Exception as erro_geral:
+        print(f"Erro inesperado ao acessar dados: {erro_geral}")
+
+
+if __name__ == "__main__":
+    main()
+
