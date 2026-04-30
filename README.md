@@ -1,76 +1,76 @@
-# Repository Overview
+# Visão Geral do Repositório
 
-"Testes-de-Simulações-Artigo" is a research repository supporting an academic article about the simultaneous capacity configuration and scheduling optimization of an integrated EV (Electric Vehicle) charging station combining photovoltaic (PV) solar generation, battery energy storage systems (BESS), and grid connection. The article title is included as a PDF in the repo.
+"Testes-de-Simulações-Artigo" é um repositório de pesquisa que sustenta um artigo acadêmico sobre a configuração simultânea de capacidade e a otimização do agendamento (scheduling) de um eletroposto integrado. O sistema combina geração solar fotovoltaica (FV), sistemas de armazenamento de energia em baterias (BESS) e conexão com a rede elétrica. O título do artigo está incluído como um PDF no repositório.
 
-Key Technologies
-Technology	Role
-Python	All modeling and simulation
-Pyomo	Mathematical optimization framework (AbstractModel-based MIP)
-Gurobi (gurobipy)	Commercial solver for the optimization problems
-Pandas / NumPy	Data manipulation and analysis
-Matplotlib	Plotting and visualization
-PyPSA	Power Systems Analysis library (referenced but used in early notebooks)
-Code Organization
-Core Optimization Models
-main.py — The primary Pyomo AbstractModel for the EV charging station (eletroposto) microgrid. 
-  Models a 24-hour horizon with PV, BESS, and grid dispatch. Objective: maximize operational profit minus annualized CAPEX. 
-Key features:
+## Tecnologias Principais
 
-Binary variable for BESS charge/discharge exclusion (no-simultaneity constraint via Big-M)
-Selectable objective: simplified profit vs. annualized with CRF + O&M
-Load shedding variable forced to zero (uninterruptible supply)
-main2.py — A second Pyomo model variant.
+| Tecnologia | Função |
+| :--- | :--- |
+| **Python** | Toda a modelagem e simulação. |
+| **Pyomo** | Framework de otimização matemática (MIP baseado em `AbstractModel`). |
+| **Gurobi (gurobipy)** | Solver comercial para a resolução dos problemas de otimização. |
+| **Pandas / NumPy** | Manipulação e análise de dados. |
+| **Matplotlib** | Plotagem e visualização de dados. |
+| **PyPSA** | Biblioteca de análise de sistemas de potência (referenciada em notebooks iniciais). |
 
-modelo_abstract_artigo_itens_322_323_4_5_6.py — Extended multi-scenario AbstractModel covering article sections 3.2.2, 3.2.3, 4, 5, 6. Adds:
+---
 
-Multi-scenario support (set SC with probabilities prob_sc)
-Technical performance indices (energy-not-served ratio, self-sufficiency, grid import ratio)
-Investment decisions shared across scenarios (P_pv_cap, E_bess_cap, P_trafo_cap)
-1_2_1_caso_referencia_min_custo_energ.py / .ipynb — Early reference case notebook: a simpler 24h cost-minimization model (commerce + EV charging demand, PV generation), exported from Jupyter.
+## Organização do Código
 
-Simulation
-simulacao_eletroposto_ve.py — Monte Carlo / stochastic simulation of EV arrivals at a Brazilian charging station. Implements:
-Chinese traffic profile methodology adapted for Brazil
-Deterministic vs. stochastic arrival comparison
-15-minute time slots, multiple vehicle technology types (VehicleTech dataclass)
-Output: relatorio_eletroposto_ve.txt, resultado_eletroposto_ve.csv
-Analysis Scripts
-analise_secao_3_2_rodovia.py — Scenario analysis for highway (rodovia) corridors. Uses simulacao_eletroposto_ve.py as a library; replaces the urban reference profile with a highway traffic profile. Outputs CSV + report.
+### Modelos de Otimização (Core)
 
-analise_fronteira_viabilidade.py — Sensitivity/feasibility frontier analysis in the spirit of article Section 5.4. Uses the main.py model to sweep parameters and map the feasibility boundary.
+* **`main.py`**: O `AbstractModel` principal do Pyomo para a microrrede do eletroposto. Modela um horizonte de 24 horas com despacho de FV, BESS e rede. 
+    * **Objetivo**: Maximizar o lucro operacional menos o CAPEX anualizado.
+    * **Recursos**: Variável binária para exclusão de carga/descarga do BESS (restrição de não-simultaneidade via Big-M) e tratamento de corte de carga (load shedding) como suprimento ininterrupto.
+* **`main2.py`**: Uma variante secundária do modelo Pyomo.
+* **`modelo_abstract_artigo_itens_322_323_4_5_6.py`**: Modelo abstrato estendido para múltiplos cenários, cobrindo as seções 3.2.2 a 6 do artigo. Adiciona índices de desempenho técnico (taxa de energia não suprida, autossuficiência) e decisões de investimento compartilhadas entre cenários.
+* **`1_2_1_caso_referencia_min_custo_energ.py / .ipynb`**: Caso de referência inicial para minimização de custos (comércio + demanda de carregamento VE + geração FV).
 
-Data Files (.dat)
-Pyomo AbstractModel data files:
+### Simulação
 
-data.dat, dados_exemplo.dat — General/example input data
-dados_cenarios_brasil.dat — Brazilian scenario data
-dados_dutra_abstract_completo.dat, entrada_recorte_empirico_dutra_abstract.dat — Data calibrated to the Dutra highway corridor (BR-116, Brazil's busiest freight/EV corridor)
-recorte_empirico_dutra.json — Empirical data from the Dutra corridor (246 avg daily arrivals, Jan 2025–Feb 2026)
-Output Files
-relatorio_*.txt — Human-readable operation reports
-resultado_*.csv — Tabular results
-saida_fronteira_viabilidade/ — Feasibility frontier outputs
-curva_carregamento_comparacao.png — Load curve comparison chart
-Subdirectories
-Alternativa dados/ — Alternative data input scripts including a Gurobi API exploration script
-CALIBRAÇÃO BRASIL/ — Brazilian market calibration: validation scripts, benchmark comparisons, article material generation, and charts for publication
-TESTES - Gurobi chat/ — Microgrid investment analyzer experiments (likely from a Gurobi AI chat session), with a standalone analyzer and report
-Documentation
-hipoteses_metodologia_calibracao_dutra.md — Documents calibration hypotheses for the Dutra corridor (stochastic CV, energy demand per session, yearly growth factors)
-referencias_parametros_dutra.md — Parameter reference source list
-article_extracted_text.txt — Full text of the reference article
-relatorio1.txt, relatorio_saida.txt — Intermediate solver output logs
-Research Workflow
-Code
-Empirical data (Dutra corridor)
-        ↓
-simulacao_eletroposto_ve.py  →  EV demand profiles (stochastic/deterministic)
-        ↓
-Pyomo AbstractModel (main.py / modelo_abstract_artigo_*.py)
-        ↓
-Gurobi solver
-        ↓
-Reports (CSV + TXT) + sensitivity / feasibility analysis
-        ↓
-CALIBRAÇÃO BRASIL/ → validation vs. market benchmarks → article figures
-The repository essentially implements the computational backbone for an operations research paper studying how to optimally size and schedule a Brazilian highway EV fast-charging station (with solar + battery + grid) while accounting for stochastic EV demand, technical reliability constraints, and economic viability.
+* **`simulacao_eletroposto_ve.py`**: Simulação estocástica/Monte Carlo de chegadas de VEs em um eletroposto brasileiro. Implementa a metodologia de perfil de tráfego adaptada para a realidade do Brasil, comparando chegadas determinísticas vs. estocásticas em intervalos de 15 minutos.
+    * **Saída**: `relatorio_eletroposto_ve.txt` e `resultado_eletroposto_ve.csv`.
+
+### Scripts de Análise
+
+* **`analise_secao_3_2_rodovia.py`**: Análise de cenários para corredores rodoviários. Utiliza o simulador como biblioteca e substitui o perfil urbano por um perfil de tráfego rodoviário.
+* **`analise_fronteira_viabilidade.py`**: Análise de sensibilidade e fronteira de viabilidade (Seção 5.4 do artigo). Mapeia os limites de viabilidade econômica varrendo diferentes parâmetros.
+
+---
+
+## Arquivos de Dados (.dat, .json)
+
+* **`data.dat` / `dados_exemplo.dat`**: Dados de entrada gerais e exemplos.
+* **`dados_cenarios_brasil.dat`**: Dados calibrados para cenários brasileiros.
+* **`dados_dutra_abstract_completo.dat` / `entrada_recorte_empirico_dutra_abstract.dat`**: Dados calibrados especificamente para o corredor da Rodovia Presidente Dutra (BR-116).
+* **`recorte_empirico_dutra.json`**: Dados empíricos do corredor Dutra (média de 246 chegadas diárias, jan/2025 – fev/2026).
+
+---
+
+## Estrutura de Diretórios
+
+* **`Alternativa dados/`**: Scripts alternativos de entrada e explorações da API do Gurobi.
+* **`CALIBRAÇÃO BRASIL/`**: Validação do mercado brasileiro, benchmarks e geração de gráficos para a publicação final.
+* **`TESTES - Gurobi chat/`**: Experimentos com analisadores de investimento em microrredes (possivelmente derivados de sessões de IA/Gurobi Chat).
+* **`saida_fronteira_viabilidade/`**: Resultados gerados pela análise de fronteira.
+
+---
+
+## Documentação de Apoio
+
+* **`hipoteses_metodologia_calibracao_dutra.md`**: Documenta as hipóteses de calibração para a Dutra (demanda de energia por sessão, fatores de crescimento anual, etc.).
+* **`referencias_parametros_dutra.md`**: Lista de fontes para os parâmetros utilizados.
+* **`article_extracted_text.txt`**: Texto completo do artigo de referência para consulta rápida.
+
+---
+
+## Fluxo de Trabalho da Pesquisa
+
+1.  **Dados Empíricos** (Corredor Dutra)
+2.  **`simulacao_eletroposto_ve.py`** → Geração de perfis de demanda de VE (estocásticos).
+3.  **Pyomo AbstractModel** (`main.py` / `modelo_abstract_artigo_*.py`) → Definição do problema matemático.
+4.  **Gurobi Solver** → Otimização dos resultados.
+5.  **Relatórios e Análises** → Geração de CSVs, TXTs e análise de fronteira de viabilidade.
+6.  **`CALIBRAÇÃO BRASIL/`** → Validação final e geração das figuras do artigo.
+
+> **Resumo**: Este repositório implementa a espinha dorsal computacional para um estudo de pesquisa operacional sobre como dimensionar e operar de forma otimizada um eletroposto de carregamento rápido em rodovias brasileiras, considerando incertezas de demanda, confiabilidade técnica e viabilidade econômica.
