@@ -17,43 +17,162 @@ from pyomo.opt import SolverStatus, TerminationCondition
 
 
 """
-Modelo Pyomo (AbstractModel) para microrrede de eletroposto em rodovia.
+Modelo Pyomo (AbstractModel) para microrrede de eletroposto em rodovia brasileira.
+Base conceitual: Secao 3.2 do artigo de referencia — otimizacao simultanea de
+configuracao de capacidade e despacho de um eletroposto integrado com FV e BESS.
 
-Base conceitual: Secao 3.2 do artigo, com foco no despacho integrado PV-BESS-Rede.
+=============================================================================
+RESUMO DO PROBLEMA
+=============================================================================
+O modelo determina simultaneamente:
+  (a) o dimensionamento otimo de ativos (capacidade PV em kW, BESS em kWh,
+      transformador de conexao com a rede em kW); e
+  (b) o despacho operacional horario desses ativos ao longo de um dia
+      representativo de 24 horas (t = 1..24).
 
-Simplificacoes adotadas neste modelo:
-1) Objetivo economico simplificado:
-   - Maximizacao de lucro operacional (receita de recarga + receita de exportacao - custo de importacao)
-     menos CAPEX inicial (PV, BESS, transformador).
-    - Custos de CO2 e depreciações/valor do dinheiro no tempo complexos foram desconsiderados.
-2) Versao "mais proxima do artigo" disponivel:
-    - Inclui custo anualizado de investimento via CRF e O&M anual por capacidade instalada.
-    - A escolha entre objetivo simplificado e objetivo anualizado e controlada pelo parametro
-      use_article_like_objective (0=simplificado, 1=anualizado com CRF+O&M).
-3) Horizonte operacional:
-   - Serie de 24h representativa.
-   - Para comparar com CAPEX (investimento unico), aplica-se o fator
-     operational_days_equivalent para anualizar o resultado operacional representativo.
-4) BESS linear:
-   - Dinamica de SOC linear com eficiencias separadas de carga e descarga.
-    - Nao simultaneidade carga/descarga imposta via variavel binaria por hora.
-    - Linearizacao Big-M fisicamente derivada de um limite superior de capacidade do BESS.
-5) Restricao anti-load-shedding:
-   - Variavel de corte de carga (LoadShedding) existe para rastreabilidade,
-     mas e forçada a zero em todas as horas (servico ininterrupto da Bolsa #7).
+A funcao objetivo maximiza o lucro economico anualizado, descontado o custo
+de investimento. A solucao viavel satisfaz restricoes fisicas (balanco de
+energia, limites de potencia, dinamica de SOC) e de qualidade de servico
+(atendimento integral da demanda de recarga de veiculos eletricos — VE).
 
-Mapeamento de parametros tecnicos:
-- irradiance_cf[t]: fator de capacidade PV por hora (0 a 1), mapeando irradiancia para
-  potencia disponivel por kW instalado.
-- eta_charge, eta_discharge: eficiencias de carga/descarga do BESS (tipicamente 90-95%).
-- c_rate_charge, c_rate_discharge: limites de potencia do BESS em funcao da energia instalada.
-- soc_min_frac, soc_max_frac, soc_initial_frac: limites e condicao inicial/final de SOC.
-- grid_price[t]: tarifa horaria de energia da rede (BRL/kWh).
-- tariff_ev: tarifa de venda para recarga de VE (BRL/kWh).
+=============================================================================
+CONJUNTOS
+=============================================================================
+  T = {1, 2, ..., 24}  — horizonte horario discretizado (um dia representativo)
+
+=============================================================================
+PARAMETROS (com unidades)
+=============================================================================
+Escalares economicos:
+  delta_t                   [h]          Duracao de cada periodo (default=1)
+  operational_days_equivalent [dias/ano] Fator de anualizacao do dia representativo
+  tariff_ev                 [BRL/kWh]    Tarifa de venda de recarga ao usuario VE
+  export_price_factor       [-]          Fracao do grid_price paga pela exportacao
+  allow_grid_export         {0,1}        Habilita (1) ou proibe (0) exportacao
+  use_article_like_objective {0,1}       Seletor: 0=objetivo simplificado, 1=artigo
+
+CAPEX (investimento unitario):
+  capex_pv_kw               [BRL/kW]     Custo unitario do arranjo FV
+  capex_bess_kwh             [BRL/kWh]   Custo unitario do armazenamento
+  capex_trafo_kw             [BRL/kW]    Custo unitario do transformador
+
+Anualizacao (versao artigo):
+  crf_pv                    [-]          Capital Recovery Factor do FV
+  crf_bess                  [-]          Capital Recovery Factor do BESS
+  crf_trafo                 [-]          Capital Recovery Factor do trafo
+  om_pv_kw_year             [BRL/(kW·ano)]  O&M anual do FV por kW instalado
+  om_bess_kwh_year          [BRL/(kWh·ano)] O&M anual do BESS por kWh instalado
+  om_trafo_kw_year          [BRL/(kW·ano)]  O&M anual do trafo por kW instalado
+
+Tecnico BESS:
+  eta_charge                [-]          Eficiencia de carga (tipicamente 0.90-0.95)
+  eta_discharge             [-]          Eficiencia de descarga (tipicamente 0.90-0.95)
+  soc_min_frac              [-]          SOC minimo como fracao da capacidade
+  soc_max_frac              [-]          SOC maximo como fracao da capacidade
+  soc_initial_frac          [-]          SOC inicial/final (condicao de periodicidade)
+  c_rate_charge             [1/h]        C-rate maximo de carga
+  c_rate_discharge          [1/h]        C-rate maximo de descarga
+  E_bess_cap_max            [kWh]        Limite superior de projeto (usado no Big-M)
+  P_pv_cap_max              [kW]         Limite superior de projeto para FV
+  P_trafo_cap_max           [kW]         Limite superior de projeto para trafo
+
+Series horarias (indexadas por t in T):
+  irradiance_cf[t]          [-]          Fator de capacidade FV (∈ [0,1])
+  grid_price[t]             [BRL/kWh]    Tarifa TOU de importacao/referencia
+  P_EV_load[t]              [kW]         Demanda inelastica de recarga VE
+
+=============================================================================
+VARIAVEIS DE DECISAO
+=============================================================================
+Investimento (primeiro estagio — escalares):
+  P_pv_cap                  [kW]         Capacidade FV instalada
+  E_bess_cap                [kWh]        Capacidade energetica do BESS
+  P_trafo_cap               [kW]         Capacidade do transformador
+
+Operacionais (segundo estagio — indexadas por t):
+  P_pv_gen[t]               [kW]         Potencia FV gerada e injetada
+  P_grid_import[t]          [kW]         Importacao da rede
+  P_grid_export[t]          [kW]         Exportacao para a rede
+  P_bess_charge[t]          [kW]         Potencia de carga do BESS
+  P_bess_discharge[t]       [kW]         Potencia de descarga do BESS
+  SOC[t]                    [kWh]        Estado de energia armazenado
+  LoadShedding[t]           [kW]         Corte de carga (fixado a zero nesta versao)
+  y_bess[t]                 {0,1}        Binaria de modo BESS: 1=carregando, 0=descarregando
+
+=============================================================================
+RESTRICOES (Nome Pyomo | Interpretacao | Ref. Artigo)
+=============================================================================
+  PVGenerationLimit         | P_pv_gen[t] <= irradiance_cf[t]*P_pv_cap          | Eq. de disponibilidade FV
+  TrafoImportLimit          | P_grid_import[t] <= P_trafo_cap                    | Limite interface rede (importacao)
+  TrafoExportLimit          | P_grid_export[t] <= allow_grid_export*P_trafo_cap  | Limite interface rede (exportacao)
+  BESSChargePowerLimit      | P_bess_charge[t] <= c_rate_charge * E_bess_cap     | C-rate de carga
+  BESSDischargePowerLimit   | P_bess_discharge[t] <= c_rate_discharge * E_bess_cap | C-rate de descarga
+  BESSCapacityUpperBound    | E_bess_cap <= E_bess_cap_max                       | Limite de projeto / Big-M anchor
+  PVCapacityUpperBound      | P_pv_cap <= P_pv_cap_max                           | Limite de projeto FV
+  TrafoCapacityUpperBound   | P_trafo_cap <= P_trafo_cap_max                     | Limite de projeto trafo
+  BESSChargeModeMILP        | P_bess_charge[t] <= M * y_bess[t]                  | Big-M: y=1 permite carga
+  BESSDischargeModeMILP     | P_bess_discharge[t] <= M * (1-y_bess[t])           | Big-M: y=0 permite descarga
+  SOCMin                    | SOC[t] >= soc_min_frac * E_bess_cap                | Janela segura SOC (minimo)
+  SOCMax                    | SOC[t] <= soc_max_frac * E_bess_cap                | Janela segura SOC (maximo)
+  SOCBalance                | dinamica recursiva linear com eta_charge/discharge  | Conservacao de energia BESS
+  TerminalSOC               | SOC[24] == soc_initial_frac * E_bess_cap           | Periodicidade (dia representativo)
+  EnergyBalance             | FV + Import + Descarga = Carga_VE - Shedding       | Balanco nodal (inspirado Eq. 483 do artigo — verificar numeracao na versao final)
+  NoLoadShedding            | LoadShedding[t] == 0                               | Servico ininterrupto (Bolsa #7)
+
+=============================================================================
+FUNCAO OBJETIVO
+=============================================================================
+  Forma simplificada  (use_article_like_objective = 0):
+    max  operational_days * (Rev_EV + Rev_export - Cost_import) - CAPEX_total
+    [BRL]
+
+  Forma artigo-like   (use_article_like_objective = 1):
+    max  operational_days * (Rev_EV + Rev_export - Cost_import)
+         - (CRF_pv*capex_pv*P_pv_cap + CRF_bess*capex_bess*E_bess_cap + ...)
+         - (om_pv*P_pv_cap + om_bess*E_bess_cap + om_trafo*P_trafo_cap)
+    [BRL/ano]
+
+  Nota: como P_EV_load e parametro exogeno, a receita de recarga VE e
+  "quase constante" em relacao as decisoes de operacao — as variaveis de
+  decisao atuam principalmente na minimizacao do custo liquido de suprimento
+  e no dimensionamento otimo de ativos.
+
+=============================================================================
+ASSUNCOES / LIMITACOES
+=============================================================================
+  - Horizonte de 24h representativo (um dia tipico); sazonalidade nao captada.
+  - Demanda VE (P_EV_load) tratada como inelastica e deterministicamente conhecida.
+  - Sem degradacao de BESS ao longo do dia (SOC ideal, sem envelhecimento).
+  - Exportacao de energia pode ser proibida via allow_grid_export = 0.
+  - Load shedding mantido como variavel para rastreabilidade, mas fixado a zero.
+  - Linearizacao Big-M usa E_bess_cap_max como M para nao-simultaneidade BESS.
+
+=============================================================================
+REQUISITOS DE EXECUCAO
+=============================================================================
+  Python  >= 3.9
+  Pyomo   >= 6.10
+  Solver  : Gurobi (padrao) — ver main() para alternativas CBC/GLPK.
+  Dados   : arquivo .dat com todos os parametros listados acima (ver dados_exemplo.dat).
+  Saida   : relatorio_saida.txt gerado por write_report().
 """
 
 
 def build_model() -> AbstractModel:
+    """Constroi e retorna o AbstractModel Pyomo da microrrede do eletroposto.
+
+    Entradas (via arquivo .dat passado a create_instance):
+        Todos os parametros escalares e series horarias descritos na docstring
+        do modulo (delta_t, tariff_ev, capex_*, crf_*, eta_*, soc_*, c_rate_*,
+        E_bess_cap_max, P_pv_cap_max, P_trafo_cap_max, irradiance_cf[t],
+        grid_price[t], P_EV_load[t], use_article_like_objective, etc.).
+
+    Saidas:
+        AbstractModel com:
+          - Conjunto T (horizonte horario 1..24)
+          - Todos os Param, Var, Constraint e Objective documentados no modulo
+          - Pronto para receber dados via model.create_instance(data_file)
+    """
     model = AbstractModel()
 
 
@@ -207,11 +326,20 @@ def build_model() -> AbstractModel:
     model.BESSChargePowerLimit = Constraint(model.T, rule=bess_charge_power_limit_rule)
     model.BESSDischargePowerLimit = Constraint(model.T, rule=bess_discharge_power_limit_rule)
 
-    """ # Limite superior fisico da capacidade de BESS para derivar Big-M.
-    # Fisico/economico: impede crescimento irrealista da capacidade instalada.
-    # Modelagem: fortalece numericamente a MILP, pois Big-M fica calibrado por
-    # limite plausivel e nao por constante arbitrariamente grande.
-    """
+    # -------------------------------------------------------------------------
+    # Limite superior fisico da capacidade de BESS — ancora do Big-M.
+    # -------------------------------------------------------------------------
+    # Nome Pyomo    : BESSCapacityUpperBound
+    # Interpretacao : Impede que o solver expanda a bateria alem do limite de
+    #                 projeto E_bess_cap_max (fisicamente justificado por restricoes
+    #                 de espaco, conexao ou orcamento disponivel).
+    # Papel no MILP : E_bess_cap_max serve como o valor M das restricoes
+    #                 BESSChargeModeMILP/BESSDischargeModeMILP (ver abaixo).
+    #                 Um M derivado deste limite e seguro (nao poda solucoes viaveis)
+    #                 e numericamente melhor do que uma constante arbitraria grande.
+    # Diferenca art.: Parametro de projeto exogeno; no artigo pode ser fixo ou variavel
+    #                 de cenario.
+    # -------------------------------------------------------------------------
     def bess_capacity_upper_bound_rule(m):
         return m.E_bess_cap <= m.E_bess_cap_max
     model.BESSCapacityUpperBound = Constraint(rule=bess_capacity_upper_bound_rule)
@@ -227,12 +355,28 @@ def build_model() -> AbstractModel:
     model.PVCapacityUpperBound = Constraint(rule=pv_capacity_upper_bound_rule)
     model.TrafoCapacityUpperBound = Constraint(rule=trafo_capacity_upper_bound_rule)
 
-    # Nao simultaneidade de carga/descarga (MILP linearizado).
-    # Fisico: em um mesmo intervalo, a bateria opera predominantemente em modo
-    # carga ou descarga (evita ciclo artificial instantaneo).
-    # Economico: evita solucao espuria que "compra e vende" internamente energia
-    # sem significado operacional, distorcendo lucro.
-    # Modelagem: variavel binaria y_bess[t] ativa um dos modos via Big-M.
+    # -------------------------------------------------------------------------
+    # Nao simultaneidade de carga/descarga (MILP linearizado via Big-M).
+    # -------------------------------------------------------------------------
+    # Nome Pyomo    : BESSChargeModeMILP / BESSDischargeModeMILP
+    # Interpretacao : Em cada hora t, a bateria opera em modo carga OU descarga;
+    #                 nunca simultaneamente (evita ciclo artificial sem significado fisico).
+    # Equacao artigo: restricao disjuntiva padrao para modelagem de BESS em MILP.
+    # Diferenca impl: Big-M derivado de E_bess_cap_max (limite fisico de projeto),
+    #                 nao de constante arbitrariamente grande.
+    #
+    # Mecanismo:
+    #   y_bess[t] = 1  ->  permite carga  (P_bess_charge[t] <= M)
+    #                       bloqueia descarga (P_bess_discharge[t] <= 0)
+    #   y_bess[t] = 0  ->  bloqueia carga (P_bess_charge[t] <= 0)
+    #                       permite descarga (P_bess_discharge[t] <= M)
+    #   onde M = c_rate * E_bess_cap_max.
+    #
+    # Escolha do Big-M:
+    #   M = c_rate * E_bess_cap_max e suficientemente alto para nao cortar nenhuma
+    #   solucao viavel (ja que P_bess_charge <= c_rate * E_bess_cap <= c_rate * E_bess_cap_max),
+    #   mas fisicamente justificado — evita degradacao numerica da relaxacao LP.
+    # -------------------------------------------------------------------------
 
     def bess_charge_limit_milp(m, t):
         return m.P_bess_charge[t] <= m.c_rate_charge * m.E_bess_cap_max * m.y_bess[t]
@@ -285,13 +429,19 @@ def build_model() -> AbstractModel:
 
     model.TerminalSOC = Constraint(rule=terminal_soc_rule)
 
-    # Equilibrio de energia (inspirado na Eq. 483): Fontes = Usos.
-    # Fisico: lei de conservacao de potencia em cada hora no barramento equivalente
-    # da microrrede (balanco nodal agregado).
-    # Economico: toda decisao de despacho aparece no caixa, direta ou indiretamente,
-    # por custos de compra, receitas de venda e atendimento da carga de recarga.
-    # Modelagem: igualdade linear central da formulacao, acoplando todas as
-    # variaveis operacionais do periodo t.
+    # -------------------------------------------------------------------------
+    # Balanco de energia no barramento equivalente da microrrede.
+    # -------------------------------------------------------------------------
+    # Nome Pyomo    : EnergyBalance
+    # Interpretacao : Conservacao de potencia em cada hora — todas as fontes
+    #                 devem igualar todos os usos (incluindo carga/descarga BESS).
+    #                 Fontes: P_pv_gen + P_grid_import + P_bess_discharge
+    #                 Usos  : P_EV_load - LoadShedding + P_bess_charge + P_grid_export
+    # Equacao artigo: inspirada na Eq. 483 do artigo de referencia (balanco nodal).
+    #                 Verificar numeracao exata na versao final do artigo.
+    # Diferenca impl: load shedding fixado a zero (ver NoLoadShedding) — estrutura
+    #                 mantida para facilitar extensao futura com demanda flexivel.
+    # -------------------------------------------------------------------------
     def energy_balance_rule(m, t):
         return (
             m.P_pv_gen[t] + m.P_grid_import[t] + m.P_bess_discharge[t]
@@ -311,22 +461,37 @@ def build_model() -> AbstractModel:
 
     model.NoLoadShedding = Constraint(model.T, rule=no_shedding_rule)
 
-    # Objetivo: maximizacao de desempenho economico com duas leituras.
-    # Leitura economica:
-    # - receita principal: venda de energia para recarga VE (tariff_ev * demanda).
-    # - receita secundaria: exportacao para rede com fator redutor de preco.
-    # - custo principal: importacao de energia da rede.
-    # - penalizacao de investimento: CAPEX unico (forma simplificada) ou CAPEX
-    #   anualizado + O&M (forma artigo-like).
-    # Leitura de modelagem:
-    # - ambas as funcoes sao lineares e combinadas por parametro exogeno,
-    #   preservando estrutura MILP sem nao linearidades.
-    # - como a carga de VE e parametro exogeno, a receita de recarga funciona como
-    #   termo quase constante; as decisoes atuam principalmente na minimizacao do
-    #   custo liquido de suprimento e no tamanho otimo dos ativos.
-    # A selecao da forma segue use_article_like_objective:
-    # 0 -> simplificado: (lucro operacional anualizado - CAPEX unico)
-    # 1 -> anualizado: (lucro operacional anualizado - CAPEX anualizado por CRF - O&M anual)
+    # -------------------------------------------------------------------------
+    # Funcao objetivo: maximizacao de desempenho economico anualizado.
+    # -------------------------------------------------------------------------
+    # Nome Pyomo  : Obj (sense=maximize)
+    # Interpretacao economica:
+    #   - Receita principal : tariff_ev * P_EV_load[t] * delta_t  (BRL/h -> BRL/dia)
+    #     Nota: como P_EV_load e parametro exogeno (demanda inelastica conhecida),
+    #     a receita de recarga VE e "quase constante" — as decisoes do solver atuam
+    #     principalmente na minimizacao do custo liquido de suprimento e no
+    #     dimensionamento otimo dos ativos.
+    #   - Receita secundaria: export_price_factor * grid_price[t] * P_grid_export[t]
+    #   - Custo principal   : grid_price[t] * P_grid_import[t]
+    #
+    # Anualizacao:
+    #   operational_days_equivalent converte o lucro de um dia representativo
+    #   em valor anual equivalente, permitindo subtrair o custo de investimento
+    #   (que e um desembolso ou encargo anual) na mesma unidade monetaria.
+    #
+    # Forma simplificada (use_article_like_objective = 0):
+    #   Subtrai CAPEX total de uma vez — adequado para analise de payback simples.
+    #   Unidade: BRL (fluxo anual menos estoque de investimento).
+    #
+    # Forma artigo-like (use_article_like_objective = 1):
+    #   Subtrai CAPEX anualizado via CRF (Capital Recovery Factor) e O&M anual.
+    #   CRF converte o investimento de uma vez em fluxo anual equivalente,
+    #   respeitando valor do dinheiro no tempo (taxa de desconto embutida no CRF).
+    #   Unidade: BRL/ano — comparacao homogenea entre beneficio e encargo anuais.
+    #
+    # Selecao: combinacao convexa linear pelos parametros 0/1; preserva estrutura
+    # linear do MILP sem introducao de nao-linearidades.
+    # -------------------------------------------------------------------------
     def objective_rule(m):
         daily_revenue_ev = sum(m.tariff_ev * m.P_EV_load[t] * m.delta_t for t in m.T)
         daily_revenue_export = sum(
@@ -369,11 +534,23 @@ def build_model() -> AbstractModel:
 
 
 def write_report(instance, report_path: Path) -> None:
-    # Pos-processamento economico da solucao.
-    # Esta rotina recompõe indicadores financeiros de forma transparente para
-    # auditoria: separa receita, custo operacional, CAPEX e metricas anualizadas.
-    # Do ponto de vista de pesquisa operacional, favorece interpretabilidade da
-    # solucao alem do valor escalar da funcao objetivo.
+    """Gera relatorio textual da solucao otimizada em report_path.
+
+    Formato do relatorio:
+        1. Cabecalho identificador.
+        2. Capacidades otimizadas (P_pv_cap, E_bess_cap, P_trafo_cap).
+        3. Valor da funcao objetivo ativa e modo selecionado.
+        4. Status de exportacao para a rede.
+        5. Comparativo lado a lado dos dois modos de objetivo (simplificado e
+           artigo-like), calculados sobre a mesma solucao para referencia.
+        6. Tabela CSV com despacho horario (24 linhas):
+           h, PV_gen, Grid_import, Grid_export, BESS_charge, BESS_discharge,
+           SOC, EV_load, LoadShedding  — todos em kW (potencia) exceto SOC (kWh).
+
+    Args:
+        instance: instancia Pyomo concreta apos resolucao pelo solver.
+        report_path: Path do arquivo .txt a ser criado/sobrescrito.
+    """
     objective_value = value(instance.Obj)
 
     annual_revenue_ev = sum(

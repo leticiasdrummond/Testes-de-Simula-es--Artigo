@@ -2,6 +2,69 @@
 
 "Testes-de-Simulações-Artigo" é um repositório de pesquisa que sustenta um artigo acadêmico sobre a configuração simultânea de capacidade e a otimização do agendamento (scheduling) de um eletroposto integrado. O sistema combina geração solar fotovoltaica (FV), sistemas de armazenamento de energia em baterias (BESS) e conexão com a rede elétrica. O título do artigo está incluído como um PDF no repositório.
 
+---
+
+## Como Rodar
+
+### 1. Pré-requisitos
+
+```bash
+pip install pyomo>=6.10.0 gurobipy pandas numpy matplotlib
+```
+
+Ou instale tudo de uma vez a partir do arquivo de dependências:
+
+```bash
+pip install -r requirements.txt
+```
+
+### 2. Solver
+
+O script `main.py` usa o **Gurobi** por padrão (licença acadêmica gratuita disponível em [gurobi.com/academia](https://www.gurobi.com/academia/academic-program-and-licenses/)).
+
+**Alternativas de solver (sem alterar o código de modelagem):**
+
+| Solver | Gratuito | Como usar no Pyomo | Observação |
+|--------|----------|--------------------|------------|
+| **CBC** | ✅ | `SolverFactory("cbc")` | `pip install coincbc` ou `apt install coinor-cbc` |
+| **GLPK** | ✅ | `SolverFactory("glpk")` | `apt install glpk-utils` |
+| **HiGHS** | ✅ | `SolverFactory("highs")` | `pip install highspy` (via `appsi_highs`) |
+| **Gurobi** | 🔑 | `SolverFactory("gurobi")` | Licença acadêmica gratuita |
+| **CPLEX** | 🔑 | `SolverFactory("cplex")` | Licença acadêmica IBM disponível |
+
+Para trocar o solver, edite a linha em `main.py`:
+```python
+solver = SolverFactory("cbc")   # ou "glpk", "highs", etc.
+```
+> **Nota**: solveres gratuitos podem ser mais lentos ou ter limites de escala.
+> Para problemas maiores (múltiplos cenários, horizontes longos), Gurobi/CPLEX
+> são recomendados.
+
+### 3. Executar o modelo principal
+
+```bash
+python main.py
+```
+
+O script lê `dados_exemplo.dat` e gera `relatorio_saida.txt`.
+
+### 4. O que é gerado
+
+| Arquivo | Gerado por | Conteúdo |
+|---------|------------|----------|
+| `relatorio_saida.txt` | `main.py` | Capacidades ótimas, indicadores econômicos, despacho horário (CSV embutido) |
+| `resultado_eletroposto_ve.csv` | `simulacao_eletroposto_ve.py` | Perfis de demanda VE estocásticos |
+| `resultado_secao_3_2_*.csv` | `analise_secao_3_2_rodovia.py` | Cenários de rodovia |
+| `saida_fronteira_viabilidade/` | `analise_fronteira_viabilidade.py` | Mapas de viabilidade econômica |
+
+### 5. Personalizar o cenário
+
+Edite `dados_exemplo.dat` (ou crie um novo `.dat`) trocando parâmetros como
+`tariff_ev`, `capex_*`, `grid_price[t]`, etc. Veja a documentação completa dos
+campos em [`docs/dados_exemplo.md`](docs/dados_exemplo.md).
+
+---
+
 ## Tecnologias Principais
 
 | Tecnologia | Função |
@@ -39,6 +102,8 @@
 ---
 
 ## Arquivos de Dados (.dat, .json)
+
+> 📄 Documentação detalhada de todos os campos do `.dat` em [`docs/dados_exemplo.md`](docs/dados_exemplo.md).
 
 * **`data.dat` / `dados_exemplo.dat`**: Dados de entrada gerais e exemplos.
 * **`dados_cenarios_brasil.dat`**: Dados calibrados para cenários brasileiros.
