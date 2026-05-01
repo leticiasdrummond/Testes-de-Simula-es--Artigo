@@ -74,3 +74,26 @@
 6.  **`CALIBRAÇÃO BRASIL/`** → Validação final e geração das figuras do artigo.
 
 > **Resumo**: Este repositório implementa a espinha dorsal computacional para um estudo de pesquisa operacional sobre como dimensionar e operar de forma otimizada um eletroposto de carregamento rápido em rodovias brasileiras, considerando incertezas de demanda, confiabilidade técnica e viabilidade econômica.
+
+> # **Entradas e saídas**
+
+ Arquivos de entrada (`.dat`) e saída (relatórios, CSVs, JSONs) estavam todos no diretório raiz, sem separação clara de propósito.
+
+## Estrutura de diretórios
+
+- **`entrada/`** — arquivos `.dat` consumidos pelos scripts (`data.dat`, `dados_exemplo.dat`, `dados_cenarios_brasil.dat`, `dados_dutra_abstract_completo.dat`)
+- **`saida/`** — todos os artefatos gerados: `.txt`, `.csv`, `.json`, `.md`, e `fronteira_viabilidade/` (renomeado de `saida_fronteira_viabilidade/`)
+
+## Scripts atualizados
+
+Todos os caminhos hardcoded foram ajustados nos cinco scripts principais:
+
+| Script | Entrada | Saída |
+|---|---|---|
+| `main.py` | `entrada/dados_exemplo.dat` | `saida/relatorio_saida.txt` |
+| `main2.py` | `entrada/data.dat` | `saida/relatorio1.txt` |
+| `simulacao_eletroposto_ve.py` | — | `saida/resultado_eletroposto_ve.{csv,txt}` |
+| `analise_secao_3_2_rodovia.py` | — | `saida/*.{csv,txt,json,md,dat}` |
+| `analise_fronteira_viabilidade.py` | `entrada/dados_exemplo.dat` (default) | `saida/fronteira_viabilidade` (default) |
+
+Adicionado `mkdir(parents=True, exist_ok=True)` nos scripts que escrevem em `saida/`, garantindo que o diretório seja criado automaticamente na primeira execução.
