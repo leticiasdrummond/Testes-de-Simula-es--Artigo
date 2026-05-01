@@ -97,7 +97,7 @@ Operacionais (segundo estagio — indexadas por t):
   P_bess_discharge[t]       [kW]         Potencia de descarga do BESS
   SOC[t]                    [kWh]        Estado de energia armazenado
   LoadShedding[t]           [kW]         Corte de carga (fixado a zero nesta versao)
-  y_bess[t]                 {0,1}        Binaria de modo BESS: 1=cargando, 0=descarregando
+  y_bess[t]                 {0,1}        Binaria de modo BESS: 1=carregando, 0=descarregando
 
 =============================================================================
 RESTRICOES (Nome Pyomo | Interpretacao | Ref. Artigo)
@@ -116,7 +116,7 @@ RESTRICOES (Nome Pyomo | Interpretacao | Ref. Artigo)
   SOCMax                    | SOC[t] <= soc_max_frac * E_bess_cap                | Janela segura SOC (maximo)
   SOCBalance                | dinamica recursiva linear com eta_charge/discharge  | Conservacao de energia BESS
   TerminalSOC               | SOC[24] == soc_initial_frac * E_bess_cap           | Periodicidade (dia representativo)
-  EnergyBalance             | FV + Import + Descarga = Carga_VE - Shedding       | Balanco nodal (inspirado Eq. 483)
+  EnergyBalance             | FV + Import + Descarga = Carga_VE - Shedding       | Balanco nodal (inspirado Eq. 483 do artigo — verificar numeracao na versao final)
   NoLoadShedding            | LoadShedding[t] == 0                               | Servico ininterrupto (Bolsa #7)
 
 =============================================================================
@@ -438,6 +438,7 @@ def build_model() -> AbstractModel:
     #                 Fontes: P_pv_gen + P_grid_import + P_bess_discharge
     #                 Usos  : P_EV_load - LoadShedding + P_bess_charge + P_grid_export
     # Equacao artigo: inspirada na Eq. 483 do artigo de referencia (balanco nodal).
+    #                 Verificar numeracao exata na versao final do artigo.
     # Diferenca impl: load shedding fixado a zero (ver NoLoadShedding) — estrutura
     #                 mantida para facilitar extensao futura com demanda flexivel.
     # -------------------------------------------------------------------------
