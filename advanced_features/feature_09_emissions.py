@@ -116,7 +116,7 @@ class ONSEmissionFactors:
         Perfil nacional médio para o Brasil (SIN) — 2023.
         Fonte: SEEG/MCiD, ONS (estimativa educacional).
 
-        Caracterísitcas:
+        Características:
         - AEF médio anual: ~0.074 kgCO₂/kWh (matriz predominantemente renovável)
         - MEF médio: ~0.12-0.18 kgCO₂/kWh (despacho térmico nas pontas)
         - Pico de emissão: horários 17h-22h (pico de consumo + despacho térmico)
