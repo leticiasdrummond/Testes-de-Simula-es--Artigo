@@ -643,8 +643,9 @@ def main() -> None:
     # Encapsula fluxo de execucao do experimento: leitura de dados, resolucao da
     # MILP e emissao de relatorio tecnico-economico.
     base_dir = Path(__file__).resolve().parent
-    data_file = base_dir / "dados_exemplo.dat"
-    report_file = base_dir / "relatorio_saida.txt"
+    data_file = base_dir / "entrada" / "dados_exemplo.dat"
+    report_file = base_dir / "saida" / "relatorio_saida.txt"
+    report_file.parent.mkdir(parents=True, exist_ok=True)
 
     model = build_model()
     instance = model.create_instance(str(data_file))

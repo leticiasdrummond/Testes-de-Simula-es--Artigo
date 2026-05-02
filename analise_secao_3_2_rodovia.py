@@ -645,11 +645,12 @@ def save_abstract_input_dat(dat_path: Path) -> None:
 
 def main() -> None:
     base_dir = Path(__file__).resolve().parent
-    csv_path = base_dir / "resultado_secao_3_2_dutra.csv"
-    report_path = base_dir / "relatorio_secao_3_2_dutra.txt"
-    methodology_path = base_dir / "hipoteses_metodologia_calibracao_dutra.md"
-    empirical_json_path = base_dir / "recorte_empirico_dutra.json"
-    abstract_dat_path = base_dir / "entrada_recorte_empirico_dutra_abstract.dat"
+    csv_path = base_dir / "saida" / "resultado_secao_3_2_dutra.csv"
+    report_path = base_dir / "saida" / "relatorio_secao_3_2_dutra.txt"
+    methodology_path = base_dir / "saida" / "hipoteses_metodologia_calibracao_dutra.md"
+    empirical_json_path = base_dir / "saida" / "recorte_empirico_dutra.json"
+    abstract_dat_path = base_dir / "saida" / "entrada_recorte_empirico_dutra_abstract.dat"
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
 
     rows = kpi_rows()
     save_csv(rows, csv_path)
