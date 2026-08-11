@@ -125,6 +125,7 @@ campos em [`docs/dados_exemplo.md`](docs/dados_exemplo.md).
 
 * **`hipoteses_metodologia_calibracao_dutra.md`**: Documenta as hipóteses de calibração para a Dutra (demanda de energia por sessão, fatores de crescimento anual, etc.).
 * **`referencias_parametros_dutra.md`**: Lista de fontes para os parâmetros utilizados.
+* **`docs/conteudo_central_modelagens.md`**: Registro consolidado (com data-versão) de objetivo, variáveis de decisão, restrições-chave, cenários, critérios de desempenho e regras de calibração de cada modelagem.
 * **`article_extracted_text.txt`**: Texto completo do artigo de referência para consulta rápida.
 
 ---
