@@ -208,8 +208,9 @@ def write_report_artigo(instance, results, data_path, report_path):
 
 def main():
     base_dir = Path(__file__).resolve().parent
-    data_path = base_dir / "data.dat"
-    report_path = base_dir / "relatorio1.txt"
+    data_path = base_dir / "entrada" / "data.dat"
+    report_path = base_dir / "saida" / "relatorio1.txt"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
 
     instance = model.create_instance(str(data_path))
 

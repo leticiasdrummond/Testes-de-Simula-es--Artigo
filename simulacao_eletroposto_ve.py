@@ -688,8 +688,9 @@ def save_report(rows: List[Dict[str, str]], report_path: Path) -> None:
 
 def main() -> None:
     base_dir = Path(__file__).resolve().parent
-    csv_path = base_dir / "resultado_eletroposto_ve.csv"
-    report_path = base_dir / "relatorio_eletroposto_ve.txt"
+    csv_path = base_dir / "saida" / "resultado_eletroposto_ve.csv"
+    report_path = base_dir / "saida" / "relatorio_eletroposto_ve.txt"
+    csv_path.parent.mkdir(parents=True, exist_ok=True)
 
     rows = run_study()
     save_csv(rows, csv_path)

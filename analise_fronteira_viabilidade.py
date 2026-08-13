@@ -670,10 +670,10 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Analise automatica da fronteira de viabilidade e sensibilidade do modelo Pyomo."
     )
-    parser.add_argument("--data-file", default="dados_exemplo.dat", help="Arquivo .dat base")
+    parser.add_argument("--data-file", default="entrada/dados_exemplo.dat", help="Arquivo .dat base")
     parser.add_argument(
         "--output-dir",
-        default="saida_fronteira_viabilidade",
+        default="saida/fronteira_viabilidade",
         help="Pasta de saida para csv, graficos e relatorio",
     )
     parser.add_argument("--solver", default="gurobi", help="Solver preferido")
