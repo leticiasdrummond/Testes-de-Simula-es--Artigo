@@ -125,6 +125,8 @@ campos em [`docs/dados_exemplo.md`](docs/dados_exemplo.md).
 
 * **`hipoteses_metodologia_calibracao_dutra.md`**: Documenta as hipóteses de calibração para a Dutra (demanda de energia por sessão, fatores de crescimento anual, etc.).
 * **`referencias_parametros_dutra.md`**: Lista de fontes para os parâmetros utilizados.
+* **`docs/registro_dados_levantados.md`**: Registro auditável de dados (observados, derivados, hipóteses, entradas, saídas e legado), com rastreabilidade de transformação e uso no modelo.
+* **`docs/auditoria_modelos_perguntas_pesquisa.md`**: Auditoria metodológica dos modelos, decisão de formulação canônica e cadeia de rastreabilidade da pesquisa.
 * **`article_extracted_text.txt`**: Texto completo do artigo de referência para consulta rápida.
 
 ---
